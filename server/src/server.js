@@ -50,16 +50,14 @@ app.use('/api/settings', require('./routes/settings'));
 
 app.use(express.static(path.join(__dirname, '../../client')));
 
-/* Root route — serve login */
+/* Root route -> Landing Page */
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../client/pages/landing/index.html'));
 });
 
 /* SPA fallback — skip actual asset files, serve login for everything else */
-
-app.get('/{*splat}', (req, res, next) => {
-  if (req.path.includes('.')) return next();
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../client/pages/landing/index.html'));
 });
 
