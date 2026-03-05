@@ -56,8 +56,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../client/pages/landing/index.html'));
 });
 
-/* SPA fallback — skip actual asset files, serve login for everything else */
-app.get('*', (req, res) => {
+/* SPA fallback — skip asset files, serve landing for everything else */
+
+app.get('/{*splat}', (req, res, next) => {
+  if (req.path.includes('.')) return next();
   res.sendFile(path.join(__dirname, '../../client/pages/landing/index.html'));
 });
 
