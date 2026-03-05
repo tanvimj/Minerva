@@ -69,7 +69,7 @@ router.post('/login', async (req, res) => {
   }
 })
 // ME
-const requireAuth = require('../middleware/auth')
+const requireAuth = require('/src/middleware/auth')
 
 router.get('/me', requireAuth, async (req, res) => {
   try {

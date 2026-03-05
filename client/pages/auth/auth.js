@@ -178,8 +178,8 @@
 
     const isLogin  = form === fLogin;
     const endpoint = isLogin
-  ? 'https://minerva-spwa.onrender.com'
-  : 'https://minerva-spwa.onrender.com';
+  ? 'https://minerva-spwa.onrender.com/api/auth/login'
+  : 'https://minerva-spwa.onrender.com/api/auth/register';
 
     const body = isLogin
       ? { email: form.email.value, password: form.password.value }
