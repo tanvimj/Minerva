@@ -50,15 +50,16 @@ app.use('/api/settings', require('./routes/settings'));
 
 app.use(express.static(path.join(__dirname, '../../client')));
 
-/* Root route */
+/* Root route — redirect to login */
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../client/index.html'));
+  res.sendFile(path.join(__dirname, '../../client/pages/dashboard/dashboard.html'));
 });
 
-/* SPA fallback (important for dashboard pages) */
+/* SPA fallback */
 
-app.get('/{*splat}', (req, res) => {  res.sendFile(path.join(__dirname, '../../client/index.html'));
+app.get('/{*splat}', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/pages/dashboard/dashboard.html'));
 });
 
 /* ---------------- SERVER ---------------- */
