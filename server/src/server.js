@@ -50,16 +50,17 @@ app.use('/api/settings', require('./routes/settings'));
 
 app.use(express.static(path.join(__dirname, '../../client')));
 
-/* Root route — redirect to login */
+/* Root route — serve login */
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../client/pages/dashboard/dashboard.html'));
+  res.sendFile(path.join(__dirname, '../../client/pages/landing/index.html'));
 });
 
-/* SPA fallback */
+/* SPA fallback — skip actual asset files, serve login for everything else */
 
-app.get('/{*splat}', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../client/pages/dashboard/dashboard.html'));
+app.get('/{*splat}', (req, res, next) => {
+  if (req.path.includes('.')) return next();
+  res.sendFile(path.join(__dirname, '../../client/pages/landing/index.html'));
 });
 
 /* ---------------- SERVER ---------------- */
