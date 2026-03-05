@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minerva — Your Digital Brain</title>
-  <link rel="stylesheet" href="client/pages/landing/landing.css" />
+  <link rel="stylesheet" href="/pages/landing/landing.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 </head>
@@ -21,7 +21,7 @@
       <ul class="nav-links">
         <li><a href="#features">Features</a></li>
         <li><a href="#how">How It Works</a></li>
-        <li><a href="../auth/login.html" class="nav-cta">Get Started</a></li>
+        <li><a href="/pages/auth/login.html" class="nav-cta">Get Started</a></li>
       </ul>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
@@ -30,7 +30,7 @@
     <div class="mobile-menu" id="mobileMenu">
       <a href="#features">Features</a>
       <a href="#how">How It Works</a>
-      <a href="../auth/login.html">Get Started</a>
+      <a href="/pages/auth/login.html">Get Started</a>
     </div>
   </nav>
 
@@ -43,16 +43,14 @@
         Minerva brings your notes, projects, goals, and learning into one focused space that actually makes sense.
       </p>
       <div class="hero-actions">
-        <a href="../auth/login.html" class="btn btn-primary">Get Started</a>
-        <a href="../learnmore/index.html" class="btn btn-ghost">Learn More</a>
+        <a href="/pages/auth/login.html" class="btn btn-primary">Get Started</a>
+        <a href="/pages/learnmore/index.html" class="btn btn-ghost">Learn More</a>
       </div>
     </div>
     <div class="hero-visual">
       <div class="neural-graph">
         <svg id="neuralSvg" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Edges drawn by JS -->
           <g id="edgeGroup"></g>
-          <!-- Nodes drawn by JS -->
           <g id="nodeGroup"></g>
         </svg>
       </div>
@@ -158,7 +156,7 @@
       <p class="section-label">Begin</p>
       <h2 class="cta-title">Your second mind<br />awaits.</h2>
       <p class="cta-sub">Join the quiet revolution in personal knowledge.</p>
-      <a href="../auth/login.html" class="btn btn-primary btn-large">Start for Free</a>
+      <a href="/pages/auth/login.html" class="btn btn-primary btn-large">Start for Free</a>
       <p class="cta-note">No credit card required &nbsp;·&nbsp; Works on all devices</p>
     </div>
   </section>
@@ -177,6 +175,6 @@
     </div>
   </footer>
 
-  <script src="landing.js"></script>
+  <script src="/pages/landing/script.js"></script>
 </body>
 </html>
