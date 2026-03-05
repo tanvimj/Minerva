@@ -58,8 +58,7 @@ app.get('/', (req, res) => {
 
 /* SPA fallback (important for dashboard pages) */
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../client/index.html'));
+app.get('/*', (req, res) => {  res.sendFile(path.join(__dirname, '../../client/index.html'));
 });
 
 /* ---------------- SERVER ---------------- */
