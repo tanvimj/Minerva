@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minerva — Learn More</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:         #09090f;
+      --bg-mid:     #0e0e1a;
+      --glass-bg:   rgba(255, 255, 255, 0.045);
+      --glass-brd:  rgba(255, 255, 255, 0.08);
+      --glass-hover:rgba(255, 255, 255, 0.075);
+      --accent:     #a78bfa;
+      --accent-dim: rgba(167, 139, 250, 0.15);
+      --accent-glow:rgba(167, 139, 250, 0.25);
+      --text-hi:    rgba(255, 255, 255, 0.92);
+      --text-mid:   rgba(255, 255, 255, 0.55);
+      --text-lo:    rgba(255, 255, 255, 0.3);
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --radius:     16px;
+      --max-w:      1120px;
+      --nav-h:      68px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text-mid);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    /* Background orbs */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #4f2db8 0%, transparent 70%);
+      top: -180px; left: -160px;
+    }
+    .orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #1a1060 0%, transparent 70%);
+      top: 40%; right: -160px;
+      opacity: 0.28;
+    }
+    .orb-3 {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, #0d2060 0%, transparent 70%);
+      bottom: 5%; left: 20%;
+      opacity: 0.22;
+    }
+
+    /* Nav */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    .nav.scrolled {
+      background: rgba(9, 9, 15, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-brd);
+    }
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--text-hi);
+      letter-spacing: 0.04em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--text-mid);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text-hi); }
+    .nav-cta {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--glass-brd);
+      border-radius: 40px;
+      color: var(--text-hi) !important;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, border-color 0.2s !important;
+    }
+    .nav-cta:hover {
+      background: var(--accent-dim) !important;
+      border-color: var(--accent) !important;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.75rem;
+      border-radius: 40px;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #08060f;
+      font-weight: 500;
+    }
+    .btn-primary:hover {
+      background: #c4b5fd;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 30px rgba(167, 139, 250, 0.3);
+    }
+    .btn-ghost {
+      background: var(--glass-bg);
+      color: var(--text-mid);
+      border: 1px solid var(--glass-brd);
+      backdrop-filter: blur(10px);
+    }
+    .btn-ghost:hover {
+      background: var(--glass-hover);
+      color: var(--text-hi);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .btn-large {
+      padding: 1rem 2.5rem;
+      font-size: 1rem;
+    }
+
+    /* Utility */
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+    }
+
+    /* Page hero */
+    .page-hero {
+      position: relative;
+      z-index: 1;
+      padding: calc(var(--nav-h) + 5rem) 2rem 5rem;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      text-align: center;
+    }
+    .page-hero .section-label {
+      opacity: 0;
+      animation: fadeUp 0.7s 0.1s ease forwards;
+    }
+    .page-hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 300;
+      color: var(--text-hi);
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s ease forwards;
+    }
+    .page-hero-title em {
+      font-style: italic;
+      background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 50%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page-hero-sub {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.35s ease forwards;
+    }
+    .page-hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s ease forwards;
+    }
+
+    /* Divider */
+    .divider {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, transparent, var(--glass-brd), transparent);
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Features Deep Dive ── */
+    .features-deep {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .feature-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--glass-brd);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .feature-row:last-child { border-bottom: none; }
+    .feature-row.visible { opacity: 1; transform: translateY(0); }
+    .feature-row.reverse { direction: rtl; }
+    .feature-row.reverse > * { direction: ltr; }
+
+    .feature-text .tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 40px;
+      padding: 0.25rem 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .feature-text h3 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .feature-text p {
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      line-height: 1.8;
+      margin-bottom: 0.75rem;
+    }
+    .feature-bullets {
+      margin-top: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .feature-bullets li {
+      font-size: 0.875rem;
+      color: var(--text-mid);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .feature-bullets li::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    /* Feature visual card */
+    .feature-visual {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-brd);
+      border-radius: 20px;
+      padding: 2.5rem;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(167,139,250,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .visual-icon {
+      width: 80px;
+      height: 80px;
+      color: var(--accent);
+      opacity: 0.5;
+    }
+
+    /* Mock UI elements inside visuals */
+    .mock-notes {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .mock-note {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+    }
+    .mock-note-title {
+      font-size: 0.78rem;
+      color: var(--text-hi);
+      font-weight: 400;
+      margin-bottom: 0.25rem;
+    }
+    .mock-note-body {
+      font-size: 0.7rem;
+      color: var(--text-lo);
+      line-height: 1.5;
+    }
+    .mock-tag {
+      display: inline-block;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-radius: 4px;
+      padding: 0.15rem 0.45rem;
+      margin-top: 0.4rem;
+    }
+
+    .mock-graph {
+      width: 100%;
+      height: 200px;
+      position: relative;
+    }
+    .mock-graph svg { width: 100%; height: 100%; }
+
+    .mock-goals {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .mock-goal {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .mock-goal-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-mid);
+    }
+    .mock-goal-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .mock-goal-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #a78bfa, #818cf8);
+    }
+
+    .mock-analytics {
+      width: 100%;
+    }
+    .mock-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 100px;
+      margin-bottom: 0.5rem;
+    }
+    .mock-bar {
+      flex: 1;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(to top, rgba(167,139,250,0.3), rgba(167,139,250,0.6));
+      transition: height 0.4s ease;
+    }
+    .mock-chart-label {
+      display: flex;
+      justify-content: space-between;
+    }
+    .mock-chart-label span {
+      font-size: 0.58rem;
+      color: var(--text-lo);
+    }
+
+    /* ── Pricing ── */
+    .pricing {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 0;
+    }
+    .pricing-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-brd);
+      border-radius: 20px;
+      padding: 2.25rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-card.visible { opacity: 1; transform: translateY(0); }
+    .pricing-card:hover {
+      border-color: rgba(167,139,250,0.25);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+    .pricing-card.featured {
+      border-color: rgba(167,139,250,0.35);
+      background: rgba(167,139,250,0.06);
+    }
+    .pricing-card.featured::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .pricing-badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 40px;
+      padding: 0.2rem 0.65rem;
+      margin-bottom: 1.25rem;
+      align-self: flex-start;
+    }
+    .pricing-name {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--text-hi);
+      margin-bottom: 0.35rem;
+    }
+    .pricing-desc {
+      font-size: 0.82rem;
+      color: var(--text-lo);
+      margin-bottom: 1.75rem;
+    }
+    .pricing-price {
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+      margin-bottom: 0.25rem;
+    }
+    .price-amount {
+      font-family: var(--font-serif);
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--text-hi);
+      line-height: 1;
+    }
+    .price-period {
+      font-size: 0.8rem;
+      color: var(--text-lo);
+    }
+    .pricing-note {
+      font-size: 0.72rem;
+      color: var(--text-lo);
+      margin-bottom: 2rem;
+    }
+    .pricing-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-bottom: 2rem;
+      flex: 1;
+    }
+    .pricing-features li {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .pricing-features li .check {
+      color: var(--accent);
+      font-size: 0.75rem;
+      opacity: 0.8;
+      flex-shrink: 0;
+    }
+    .pricing-features li.muted { color: var(--text-lo); }
+    .pricing-features li.muted .check { opacity: 0.3; }
+    .pricing-btn {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s ease;
+      text-align: center;
+      display: block;
+    }
+    .pricing-btn-primary {
+      background: var(--accent);
+      color: #08060f;
+    }
+    .pricing-btn-primary:hover {
+      background: #c4b5fd;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(167,139,250,0.3);
+    }
+    .pricing-btn-ghost {
+      background: transparent;
+      color: var(--text-mid);
+      border: 1px solid var(--glass-brd);
+    }
+    .pricing-btn-ghost:hover {
+      background: var(--glass-bg);
+      color: var(--text-hi);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    /* ── FAQ ── */
+    .faq {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 0;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--glass-brd);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .faq-item.visible { opacity: 1; transform: translateY(0); }
+    .faq-q {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.4rem 0;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: var(--text-hi);
+      font-weight: 400;
+      transition: color 0.2s;
+      user-select: none;
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-arrow {
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--glass-brd);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.3s ease, border-color 0.2s;
+      font-size: 0.7rem;
+      color: var(--text-lo);
+    }
+    .faq-item.open .faq-arrow {
+      transform: rotate(180deg);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+    .faq-item.open .faq-a {
+      max-height: 300px;
+      padding-bottom: 1.25rem;
+    }
+    .faq-a p {
+      font-size: 0.875rem;
+      color: var(--text-mid);
+      line-height: 1.8;
+    }
+
+    /* ── Vision ── */
+    .vision {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .vision-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .vision-text .section-label { margin-bottom: 1rem; }
+    .vision-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      color: var(--text-hi);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+    .vision-title em {
+      font-style: italic;
+      background: linear-gradient(135deg, #c4b5fd, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .vision-text p {
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .vision-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    .stat-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-brd);
+      border-radius: 16px;
+      padding: 1.5rem;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .stat-card.visible { opacity: 1; transform: translateY(0); }
+    .stat-number {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--text-hi);
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+    .stat-number span {
+      background: linear-gradient(135deg, #c4b5fd, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-lo);
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2rem 7rem;
+      display: flex;
+      justify-content: center;
+    }
+    .cta-glass {
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-brd);
+      border-radius: 24px;
+      padding: 4rem 3rem;
+      box-shadow: 0 0 80px rgba(167, 139, 250, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-glass::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .cta-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 300;
+      color: var(--text-hi);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .cta-sub {
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      margin-bottom: 2.25rem;
+    }
+    .cta-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .cta-note {
+      margin-top: 1.25rem;
+      font-size: 0.78rem;
+      color: var(--text-lo);
+    }
+
+    /* Footer */
+    .footer {
+      position: relative;
+      z-index: 1;
+      padding: 3rem 2rem 2.5rem;
+      border-top: 1px solid var(--glass-brd);
+    }
+    .footer-inner {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .footer-logo {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      color: var(--text-hi);
+      font-weight: 400;
+    }
+    .footer-tagline { font-size: 0.8rem; color: var(--text-lo); margin-bottom: 0.5rem; }
+    .footer-links { display: flex; gap: 2rem; margin: 0.5rem 0; }
+    .footer-links a { font-size: 0.8rem; color: var(--text-lo); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-mid); }
+    .footer-copy { font-size: 0.75rem; color: var(--text-lo); opacity: 0.6; margin-top: 0.5rem; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .feature-row { grid-template-columns: 1fr; gap: 2.5rem; }
+      .feature-row.reverse { direction: ltr; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+      .vision-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .vision-stats { grid-template-columns: 1fr 1fr; }
+      .cta-glass { padding: 2.75rem 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="../landing/index.html" class="nav-logo">Minerva</a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="../auth/login.html" class="nav-cta">Get Started</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <p class="section-label">Everything you need to know</p>
+    <h1 class="page-hero-title">Built for how your<br /><em>mind actually works.</em></h1>
+    <p class="page-hero-sub">Minerva isn't just another notes app. It's a thinking system — designed to grow with you, connect your ideas, and surface what matters most.</p>
+    <div class="page-hero-actions">
+      <a href="../auth/login.html" class="btn btn-primary">Start for Free</a>
+      <a href="#features" class="btn btn-ghost">Explore Features</a>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FEATURES DEEP DIVE -->
+  <section class="features-deep" id="features">
+    <div class="section-header">
+      <p class="section-label">Deep Dive</p>
+      <h2 class="section-title">What Minerva can do</h2>
+    </div>
+
+    <!-- Notes -->
+    <div class="feature-row">
+      <div class="feature-text">
+        <span class="tag">Notes & Ideas</span>
+        <h3>Capture without friction.<br />Connect without effort.</h3>
+        <p>Most note apps make you think about where to put things. Minerva doesn't. Just write — and let the system figure out the connections.</p>
+        <p>Rich text, code blocks, linked mentions, and tags all work together seamlessly. Your notes become a living document of your mind.</p>
+        <ul class="feature-bullets">
+          <li>Bi-directional linking between notes</li>
+          <li>Tag and filter by topic, project, or mood</li>
+          <li>Full-text search across everything</li>
+          <li>Version history so nothing is ever lost</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="mock-notes">
+          <div class="mock-note">
+            <div class="mock-note-title">Design system thoughts</div>
+            <div class="mock-note-body">Consistency is not uniformity. Each component should feel like it belongs to the same family...</div>
+            <span class="mock-tag">Design</span>
+          </div>
+          <div class="mock-note">
+            <div class="mock-note-title">Meeting with team — Q3 review</div>
+            <div class="mock-note-body">Key takeaway: focus on retention before acquisition. See also → Analytics dashboard notes.</div>
+            <span class="mock-tag">Work</span>
+          </div>
+          <div class="mock-note">
+            <div class="mock-note-title">Book: Thinking Fast & Slow</div>
+            <div class="mock-note-body">System 1 vs System 2. The anchoring effect has huge implications for negotiation...</div>
+            <span class="mock-tag">Reading</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Knowledge Graph -->
+    <div class="feature-row reverse">
+      <div class="feature-text">
+        <span class="tag">Knowledge Graph</span>
+        <h3>See how your ideas<br /><em>connect.</em></h3>
+        <p>Every note, project, and goal you create becomes a node in your personal knowledge graph. As you build, patterns emerge — connections you'd never have noticed on your own.</p>
+        <p>Navigate your ideas visually. Discover clusters of related thinking. Find the thread that ties months of work together.</p>
+        <ul class="feature-bullets">
+          <li>Live, interactive graph view</li>
+          <li>Auto-detected connections via AI</li>
+          <li>Filter by time, tag, or relationship type</li>
+          <li>Export your graph as a visual map</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="mock-graph">
+          <svg viewBox="0 0 260 200" fill="none">
+            <line x1="130" y1="100" x2="60" y2="50"  stroke="rgba(167,139,250,0.2)" stroke-width="1"/>
+            <line x1="130" y1="100" x2="200" y2="55"  stroke="rgba(167,139,250,0.2)" stroke-width="1"/>
+            <line x1="130" y1="100" x2="200" y2="145" stroke="rgba(167,139,250,0.2)" stroke-width="1"/>
+            <line x1="130" y1="100" x2="60" y2="150" stroke="rgba(167,139,250,0.2)" stroke-width="1"/>
+            <line x1="130" y1="100" x2="130" y2="30"  stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+            <line x1="60"  y1="50"  x2="130" y2="30"  stroke="rgba(167,139,250,0.15)" stroke-width="1"/>
+            <line x1="200" y1="55"  x2="130" y2="30"  stroke="rgba(167,139,250,0.15)" stroke-width="1"/>
+            <line x1="60"  y1="150" x2="200" y2="145" stroke="rgba(167,139,250,0.15)" stroke-width="1"/>
+            <!-- Center -->
+            <circle cx="130" cy="100" r="16" fill="rgba(167,139,250,0.12)" stroke="rgba(167,139,250,0.5)" stroke-width="1"/>
+            <circle cx="130" cy="100" r="7"  fill="rgba(167,139,250,0.5)"/>
+            <!-- Outer -->
+            <circle cx="60"  cy="50"  r="9"  fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+            <circle cx="60"  cy="50"  r="4"  fill="rgba(167,139,250,0.4)"/>
+            <circle cx="200" cy="55"  r="9"  fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+            <circle cx="200" cy="55"  r="4"  fill="rgba(167,139,250,0.4)"/>
+            <circle cx="200" cy="145" r="9"  fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+            <circle cx="200" cy="145" r="4"  fill="rgba(167,139,250,0.4)"/>
+            <circle cx="60"  cy="150" r="9"  fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+            <circle cx="60"  cy="150" r="4"  fill="rgba(167,139,250,0.4)"/>
+            <circle cx="130" cy="30"  r="7"  fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.25)" stroke-width="1"/>
+            <circle cx="130" cy="30"  r="3"  fill="rgba(167,139,250,0.35)"/>
+            <!-- Labels -->
+            <text x="130" y="118" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.4)" font-family="DM Sans">Minerva</text>
+            <text x="60"  y="66"  text-anchor="middle" font-size="6.5" fill="rgba(255,255,255,0.3)" font-family="DM Sans">Notes</text>
+            <text x="200" y="71"  text-anchor="middle" font-size="6.5" fill="rgba(255,255,255,0.3)" font-family="DM Sans">Goals</text>
+            <text x="200" y="161" text-anchor="middle" font-size="6.5" fill="rgba(255,255,255,0.3)" font-family="DM Sans">Projects</text>
+            <text x="60"  y="166" text-anchor="middle" font-size="6.5" fill="rgba(255,255,255,0.3)" font-family="DM Sans">Ideas</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals -->
+    <div class="feature-row">
+      <div class="feature-text">
+        <span class="tag">Goals & Projects</span>
+        <h3>Turn ambition into<br />structured progress.</h3>
+        <p>Set goals that are tied to your notes and projects. Track progress with milestones. See at a glance what's moving and what needs attention.</p>
+        <p>Minerva doesn't judge your pace — it just keeps you honest about where things stand.</p>
+        <ul class="feature-bullets">
+          <li>Link goals to specific notes and projects</li>
+          <li>Milestone-based progress tracking</li>
+          <li>Weekly review prompts built in</li>
+          <li>Archive completed goals with full history</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="mock-goals">
+          <div class="mock-goal">
+            <div class="mock-goal-label"><span>Launch side project</span><span style="color:var(--accent)">72%</span></div>
+            <div class="mock-goal-bar"><div class="mock-goal-fill" style="width:72%"></div></div>
+          </div>
+          <div class="mock-goal">
+            <div class="mock-goal-label"><span>Read 24 books this year</span><span style="color:var(--accent)">54%</span></div>
+            <div class="mock-goal-bar"><div class="mock-goal-fill" style="width:54%"></div></div>
+          </div>
+          <div class="mock-goal">
+            <div class="mock-goal-label"><span>Learn Portuguese</span><span style="color:var(--accent)">31%</span></div>
+            <div class="mock-goal-bar"><div class="mock-goal-fill" style="width:31%"></div></div>
+          </div>
+          <div class="mock-goal">
+            <div class="mock-goal-label"><span>Daily journaling streak</span><span style="color:var(--accent)">88%</span></div>
+            <div class="mock-goal-bar"><div class="mock-goal-fill" style="width:88%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics -->
+    <div class="feature-row reverse">
+      <div class="feature-text">
+        <span class="tag">Productivity Insights</span>
+        <h3>Understand where your<br /><em>focus flows.</em></h3>
+        <p>Minerva quietly tracks how you work — when you're most productive, which topics capture your attention, and where momentum tends to fade.</p>
+        <p>Not to judge you, but to help you design a better rhythm.</p>
+        <ul class="feature-bullets">
+          <li>Daily and weekly focus heatmaps</li>
+          <li>Topic engagement over time</li>
+          <li>Streak tracking for habits and goals</li>
+          <li>Monthly reflection summaries</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div class="mock-analytics">
+          <div class="mock-chart" id="mockChart">
+            <div class="mock-bar" style="height:40%"></div>
+            <div class="mock-bar" style="height:65%"></div>
+            <div class="mock-bar" style="height:55%"></div>
+            <div class="mock-bar" style="height:80%"></div>
+            <div class="mock-bar" style="height:70%"></div>
+            <div class="mock-bar" style="height:90%"></div>
+            <div class="mock-bar" style="height:60%"></div>
+          </div>
+          <div class="mock-chart-label">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="section-header">
+      <p class="section-label">Pricing</p>
+      <h2 class="section-title">Simple, honest pricing</h2>
+    </div>
+    <div class="pricing-grid">
+
+      <div class="pricing-card">
+        <span class="pricing-badge">Free</span>
+        <div class="pricing-name">Spark</div>
+        <div class="pricing-desc">For individuals just getting started.</div>
+        <div class="pricing-price">
+          <span class="price-amount">$0</span>
+          <span class="price-period">forever</span>
+        </div>
+        <div class="pricing-note">No credit card required</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Up to 200 notes</li>
+          <li><span class="check">✓</span> Basic knowledge graph</li>
+          <li><span class="check">✓</span> 3 active goals</li>
+          <li><span class="check">✓</span> 7-day history</li>
+          <li class="muted"><span class="check">✓</span> Analytics (limited)</li>
+          <li class="muted"><span class="check">–</span> Smart suggestions</li>
+          <li class="muted"><span class="check">–</span> Export & backup</li>
+        </ul>
+        <a href="../auth/login.html" class="pricing-btn pricing-btn-ghost">Get Started</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <span class="pricing-badge">Most Popular</span>
+        <div class="pricing-name">Mind</div>
+        <div class="pricing-desc">For thinkers who want the full picture.</div>
+        <div class="pricing-price">
+          <span class="price-amount">$9</span>
+          <span class="price-period">/ month</span>
+        </div>
+        <div class="pricing-note">Billed monthly · cancel anytime</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Unlimited notes</li>
+          <li><span class="check">✓</span> Full knowledge graph</li>
+          <li><span class="check">✓</span> Unlimited goals & projects</li>
+          <li><span class="check">✓</span> Full history & versioning</li>
+          <li><span class="check">✓</span> Advanced analytics</li>
+          <li><span class="check">✓</span> Smart suggestions</li>
+          <li><span class="check">✓</span> Export & backup</li>
+        </ul>
+        <a href="../auth/login.html" class="pricing-btn pricing-btn-primary">Start Free Trial</a>
+      </div>
+
+      <div class="pricing-card">
+        <span class="pricing-badge">Teams</span>
+        <div class="pricing-name">Hive</div>
+        <div class="pricing-desc">For teams building shared intelligence.</div>
+        <div class="pricing-price">
+          <span class="price-amount">$24</span>
+          <span class="price-period">/ month</span>
+        </div>
+        <div class="pricing-note">Per workspace · up to 10 members</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Everything in Mind</li>
+          <li><span class="check">✓</span> Shared workspaces</li>
+          <li><span class="check">✓</span> Team knowledge graph</li>
+          <li><span class="check">✓</span> Collaborative notes</li>
+          <li><span class="check">✓</span> Admin controls</li>
+          <li><span class="check">✓</span> Priority support</li>
+          <li><span class="check">✓</span> SSO & audit logs</li>
+        </ul>
+        <a href="../auth/login.html" class="pricing-btn pricing-btn-ghost">Contact Us</a>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- VISION -->
+  <section class="vision" id="vision">
+    <div class="vision-grid">
+      <div class="vision-text">
+        <p class="section-label">Our Vision</p>
+        <h2 class="vision-title">Knowledge should<br />work <em>for</em> you.</h2>
+        <p>We built Minerva because we believe the tools we use to think should be as sophisticated as thought itself. Most productivity apps treat your brain like a filing cabinet. We treat it like what it actually is — a living network of ideas, experiences, and evolving understanding.</p>
+        <p>Minerva is designed to fade into the background. No clutter, no noise. Just the clarity to focus on what matters, and the confidence that nothing important is slipping away.</p>
+      </div>
+      <div class="vision-stats">
+        <div class="stat-card" data-delay="0">
+          <div class="stat-number"><span>12k+</span></div>
+          <div class="stat-label">Active thinkers</div>
+        </div>
+        <div class="stat-card" data-delay="100">
+          <div class="stat-number"><span>2.4M</span></div>
+          <div class="stat-label">Notes captured</div>
+        </div>
+        <div class="stat-card" data-delay="200">
+          <div class="stat-number"><span>98%</span></div>
+          <div class="stat-label">Uptime reliability</div>
+        </div>
+        <div class="stat-card" data-delay="300">
+          <div class="stat-number"><span>4.9★</span></div>
+          <div class="stat-label">Average rating</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="section-header">
+      <p class="section-label">FAQ</p>
+      <h2 class="section-title">Questions, answered</h2>
+    </div>
+    <ul class="faq-list">
+      <li class="faq-item">
+        <div class="faq-q">Is my data private and secure? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a"><p>Yes. All your notes and data are encrypted at rest and in transit. We never sell your data or use it to train models. You own everything you create in Minerva.</p></div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">Can I import from other apps like Notion or Obsidian? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a"><p>Absolutely. Minerva supports import from Markdown, Notion exports, and plain text. We're actively building deeper integrations — more coming soon.</p></div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">Does Minerva work offline? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a"><p>Yes — the desktop and mobile apps support full offline mode. Your notes sync automatically when you reconnect. Nothing is lost if your connection drops.</p></div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">What makes the Knowledge Graph different? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a"><p>Most graph tools require you to manually draw connections. Minerva does it automatically — surfacing relationships between your notes, goals, and projects as you work. You can also add manual links whenever you want.</p></div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">Can I cancel my subscription at any time? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a"><p>Yes, always. No lock-in, no cancellation fees. If you cancel, you keep access until the end of your billing period. Your data is yours to export at any time.</p></div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">Is there a mobile app? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a"><p>Mobile apps for iOS and Android are currently in beta. Web access works great on mobile browsers in the meantime. Sign up to be notified when the apps launch.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-glass">
+      <p class="section-label">Begin</p>
+      <h2 class="cta-title">Ready to think<br />differently?</h2>
+      <p class="cta-sub">Start building your second brain today. It's free to begin.</p>
+      <div class="cta-btns">
+        <a href="../auth/login.html" class="btn btn-primary btn-large">Create Free Account</a>
+        <a href="../landing/index.html" class="btn btn-ghost btn-large">Back to Home</a>
+      </div>
+      <p class="cta-note">No credit card required &nbsp;·&nbsp; Works on all devices</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-logo">Minerva</span>
+      <p class="footer-tagline">Your Digital Brain</p>
+      <nav class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </nav>
+      <p class="footer-copy">&copy; 2026 Minerva. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // Intersection observer for scroll reveals
+    const revealEls = document.querySelectorAll('.feature-row, .pricing-card, .stat-card, .faq-item');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(() => entry.target.classList.add('visible'), delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.querySelector('.faq-q').addEventListener('click', () => {
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!wasOpen) item.classList.add('open');
+      });
+    });
+
+    // Smooth anchor scroll with nav offset
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', e => {
+        const target = document.querySelector(anchor.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        const top = target.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>

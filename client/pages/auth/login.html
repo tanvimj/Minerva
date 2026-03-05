@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minerva — Sign In</title>
+  <link rel="stylesheet" href="auth.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Single lightweight background — NO canvas, NO particles -->
+  <div class="bg-mesh"></div>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+
+  <main class="shell">
+
+    <!-- LEFT brand panel -->
+    <aside class="brand-side">
+      <div class="brand-mark">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="dot"></div>
+      </div>
+      <h1 class="brand-name">Minerva</h1>
+      <p class="brand-tag">Your Digital Brain</p>
+      <ul class="feat-list">
+        <li><span class="pip"></span>Notes &amp; Ideas</li>
+        <li><span class="pip"></span>Projects &amp; Goals</li>
+        <li><span class="pip"></span>Knowledge Graph</li>
+        <li><span class="pip"></span>Productivity Insights</li>
+      </ul>
+    </aside>
+
+    <!-- RIGHT form panel -->
+    <section class="form-side">
+
+      <!-- Tab switcher -->
+      <div class="tabs" role="tablist">
+        <button class="tab active" id="tab-in"  data-panel="login"  role="tab">Sign In</button>
+        <button class="tab"        id="tab-up"  data-panel="signup" role="tab">Sign Up</button>
+        <div class="tab-pill" id="tabPill"></div>
+      </div>
+
+      <!-- Viewport: only ONE slide visible at a time via clip + translate -->
+      <div class="viewport">
+        <div class="track" id="track">
+
+          <!-- LOGIN panel -->
+          <div class="panel" id="panel-login">
+            <div class="form-head">
+              <h2>Welcome<br/><em>back.</em></h2>
+              <p>Sign in to your workspace.</p>
+            </div>
+            <form id="f-login" novalidate>
+              <div class="field">
+                <input type="email" id="li-email" name="email" placeholder=" " required autocomplete="email"/>
+                <label for="li-email">Email address</label>
+                <span class="line"></span>
+              </div>
+              <div class="field">
+                <input type="password" id="li-pw" name="password" placeholder=" " required autocomplete="current-password"/>
+                <label for="li-pw">Password</label>
+                <span class="line"></span>
+                <button type="button" class="eyebtn">
+                  <svg class="ic" viewBox="0 0 24 24" fill="none">
+                    <g class="eye-show"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></g>
+                    <line class="eye-hide" x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+              <a href="#" class="soft-link align-right">Forgot password?</a>
+              <button type="submit" class="submit-btn">
+                <span class="btn-text">Sign In</span>
+                <span class="btn-arr">→</span>
+                <span class="spinner"></span>
+              </button>
+            </form>
+            <p class="nudge">No account? <button class="nudge-btn" data-to="signup">Create one →</button></p>
+          </div>
+
+          <!-- SIGNUP panel -->
+          <div class="panel" id="panel-signup">
+            <div class="form-head">
+              <h2>Start your<br/><em>journey.</em></h2>
+              <p>Build your second brain today.</p>
+            </div>
+            <form id="f-signup" novalidate>
+              <div class="field">
+                <input type="text" id="su-name" name="name" placeholder=" " required autocomplete="name"/>
+                <label for="su-name">Full name</label>
+                <span class="line"></span>
+              </div>
+              <div class="field">
+                <input type="email" id="su-email" name="email" placeholder=" " required autocomplete="email"/>
+                <label for="su-email">Email address</label>
+                <span class="line"></span>
+              </div>
+              <div class="field">
+                <input type="password" id="su-pw" name="password" placeholder=" " required autocomplete="new-password"/>
+                <label for="su-pw">Password</label>
+                <span class="line"></span>
+                <button type="button" class="eyebtn">
+                  <svg class="ic" viewBox="0 0 24 24" fill="none">
+                    <g class="eye-show"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></g>
+                    <line class="eye-hide" x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                <!-- strength -->
+                <div class="strength" id="strength">
+                  <div class="s-track"><div class="s-bar" id="sBar"></div></div>
+                  <span class="s-label" id="sLabel"></span>
+                </div>
+              </div>
+              <div class="field">
+                <input type="password" id="su-cfm" name="confirm" placeholder=" " required autocomplete="new-password"/>
+                <label for="su-cfm">Confirm password</label>
+                <span class="line"></span>
+                <span class="match-msg" id="matchMsg"></span>
+              </div>
+              <button type="submit" class="submit-btn">
+                <span class="btn-text">Create Account</span>
+                <span class="btn-arr">→</span>
+                <span class="spinner"></span>
+              </button>
+            </form>
+            <p class="nudge">Have an account? <button class="nudge-btn" data-to="login">Sign in →</button></p>
+          </div>
+
+        </div><!-- /track -->
+      </div><!-- /viewport -->
+
+      <p class="legal">By continuing you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy</a>.</p>
+
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+</body>
+</html>

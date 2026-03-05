@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  bio       String   @default("")
+  timezone  String   @default("Asia/Kolkata")
+  language  String   @default("en")
+  theme     String   @default("dark")
+  accent    String   @default("#a78bfa")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  notes     Note[]
+  goals     Goal[]
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String   @default("")
+  content   String
+  tag       String   @default("Note")
+  tags      String[] @default([])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Goal {
+  id         String   @id @default(cuid())
+  name       String
+  desc       String   @default("")
+  category   String   @default("work")
+  status     String   @default("active")
+  progress   Int      @default(0)
+  due        String?
+  milestones Json     @default("[]")
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

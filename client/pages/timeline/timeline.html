@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minerva — Timeline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+/* =====================================================
+   MINERVA — timeline.css
+   ===================================================== */
+
+:root {
+  --bg:          #07070e;
+  --surface:     rgba(255,255,255,0.038);
+  --surface-hi:  rgba(255,255,255,0.06);
+  --brd:         rgba(255,255,255,0.07);
+  --brd-hi:      rgba(167,139,250,0.22);
+  --accent:      #a78bfa;
+  --accent-glow: rgba(167,139,250,0.2);
+  --accent-dim:  rgba(167,139,250,0.1);
+  --hi:          rgba(255,255,255,0.92);
+  --mid:         rgba(255,255,255,0.52);
+  --lo:          rgba(255,255,255,0.26);
+  --very-lo:     rgba(255,255,255,0.1);
+  --green:       rgba(110,231,183,0.85);
+  --yellow:      rgba(251,191,36,0.85);
+  --red:         rgba(248,113,113,0.85);
+  --serif:       'Cormorant Garamond', Georgia, serif;
+  --sans:        'DM Sans', system-ui, sans-serif;
+  --ease:        cubic-bezier(0.4,0,0.2,1);
+  --sidebar-w:   220px;
+  --sidebar-w-c: 64px;
+  --topbar-h:    60px;
+  --r:           14px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  background: var(--bg);
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 14px;
+  color: var(--mid);
+  height: 100%;
+  overflow: hidden;
+}
+a    { color: inherit; text-decoration: none; }
+button { font-family: var(--sans); cursor: pointer; border: none; background: none; }
+textarea, input, select { font-family: var(--sans); }
+
+/* ── Background ── */
+.bg-base {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 5%  5%,  rgba(55,20,150,0.32) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 45% at 95% 90%, rgba(15,8,60,0.28)   0%, transparent 60%);
+}
+.bg-orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px); pointer-events: none; z-index: 0;
+  transform: translateZ(0); will-change: transform;
+}
+.orb-1 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(70,25,180,0.25) 0%, transparent 70%); top:-160px; left:-120px; opacity:.5; }
+.orb-2 { width: 340px; height: 340px; background: radial-gradient(circle, rgba(15,8,55,0.22)  0%, transparent 70%); bottom:-120px; right:-100px; opacity:.4; }
+
+/* ── App Shell ── */
+.app-shell {
+  position: relative; z-index: 1;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════
+   SIDEBAR (identical to dashboard)
+══════════════════════════════════ */
+.sidebar {
+  flex-shrink: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(10,8,22,0.72);
+  border-right: 1px solid var(--brd);
+  transition: width 0.32s var(--ease);
+  overflow: hidden;
+  position: relative;
+  z-index: 50;
+}
+.sidebar.collapsed { width: var(--sidebar-w-c); }
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1.25rem 1rem 1rem;
+  min-height: 68px; flex-shrink: 0; overflow: hidden;
+}
+.brand-mark { position: relative; width: 28px; height: 28px; flex-shrink: 0; }
+.bm-ring {
+  position: absolute; border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  border: 1px solid rgba(167,139,250,0.3);
+  animation: slowSpin linear infinite;
+}
+.r1 { width: 28px; height: 28px; animation-duration: 28s; }
+.r2 { width: 18px; height: 18px; animation-duration: 16s; animation-direction: reverse; border-color: rgba(167,139,250,0.55); }
+.bm-dot {
+  position: absolute; width: 4px; height: 4px;
+  border-radius: 50%; background: var(--accent);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+@keyframes slowSpin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+.brand-text { display: flex; flex-direction: column; white-space: nowrap; overflow: hidden; }
+.brand-name { font-family: var(--serif); font-size: 1.15rem; font-weight: 400; color: var(--hi); letter-spacing: .05em; line-height: 1; }
+.brand-tag  { font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); opacity: .6; margin-top: .15rem; }
+.sidebar.collapsed .brand-text { opacity: 0; pointer-events: none; }
+
+.sidebar-nav {
+  flex: 1; display: flex; flex-direction: column;
+  padding: .5rem .6rem; gap: .15rem;
+  overflow-y: auto; overflow-x: hidden;
+}
+.sidebar-nav::-webkit-scrollbar { width: 3px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--very-lo); border-radius: 3px; }
+.nav-divider { height: 1px; background: var(--brd); margin: .5rem .4rem; }
+
+.nav-item {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .6rem .65rem; border-radius: 10px;
+  color: var(--lo); white-space: nowrap;
+  transition: background .18s, color .18s, padding .32s var(--ease);
+  position: relative; overflow: hidden;
+}
+.nav-item:hover { background: var(--surface); color: var(--mid); }
+.nav-item.active {
+  background: var(--accent-dim); color: var(--accent);
+  border: 1px solid rgba(167,139,250,0.15);
+}
+.nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+  width: 2px; border-radius: 2px; background: var(--accent);
+}
+.nav-icon { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.nav-icon svg { width: 100%; height: 100%; }
+.nav-label { font-size: .82rem; font-weight: 400; }
+.sidebar.collapsed .nav-label { opacity: 0; pointer-events: none; }
+.sidebar.collapsed .nav-item  { padding: .6rem; justify-content: center; }
+.sidebar.collapsed .nav-item::after {
+  content: attr(data-label);
+  position: absolute; left: calc(var(--sidebar-w-c) + 8px);
+  background: rgba(15,12,30,0.92); color: var(--hi); font-size: .75rem;
+  padding: .3rem .65rem; border-radius: 7px; border: 1px solid var(--brd);
+  white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 100;
+}
+.sidebar.collapsed .nav-item:hover::after { opacity: 1; }
+
+.sidebar-toggle {
+  display: flex; align-items: center; justify-content: center;
+  margin: .75rem .6rem 1rem; padding: .55rem;
+  border-radius: 10px; color: var(--lo);
+  border: 1px solid var(--brd);
+  transition: background .18s, color .18s, transform .32s var(--ease);
+  flex-shrink: 0;
+}
+.sidebar-toggle:hover { background: var(--surface); color: var(--mid); }
+.sidebar-toggle svg { width: 14px; height: 14px; transition: transform .32s var(--ease); }
+.sidebar.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
+
+/* ══════════════════════════════════
+   MAIN WRAP
+══════════════════════════════════ */
+.main-wrap {
+  flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+}
+
+/* ── Topbar ── */
+.topbar {
+  height: var(--topbar-h); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.75rem;
+  background: rgba(7,7,14,0.7);
+  border-bottom: 1px solid var(--brd);
+  position: sticky; top: 0; z-index: 40;
+}
+.topbar-left { display: flex; align-items: baseline; gap: 1rem; }
+.page-title { font-family: var(--serif); font-size: 1.4rem; font-weight: 300; color: var(--hi); letter-spacing: .04em; }
+.page-date  { font-size: .72rem; color: var(--lo); letter-spacing: .04em; }
+.topbar-right { display: flex; align-items: center; gap: .75rem; }
+
+.search-pill {
+  display: flex; align-items: center; gap: .45rem;
+  background: var(--surface); border: 1px solid var(--brd);
+  border-radius: 40px; padding: .35rem .85rem;
+  transition: border-color .2s, background .2s;
+}
+.search-pill:focus-within { border-color: rgba(167,139,250,.35); background: var(--accent-dim); }
+.search-pill svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--lo); }
+.search-input { background: none; border: none; outline: none; font-size: .8rem; color: var(--hi); width: 140px; }
+.search-input::placeholder { color: var(--lo); }
+
+.icon-btn {
+  position: relative; width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--lo); border: 1px solid var(--brd); background: var(--surface);
+  transition: color .18s, background .18s;
+}
+.icon-btn:hover { color: var(--mid); background: var(--surface-hi); }
+.icon-btn svg { width: 16px; height: 16px; }
+.notif-dot { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); border: 1.5px solid var(--bg); }
+
+.avatar-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid rgba(167,139,250,0.4);
+  transition: box-shadow .2s;
+}
+.avatar-btn:hover { box-shadow: 0 0 0 3px rgba(167,139,250,0.18); }
+.avatar-initials { font-size: .65rem; font-weight: 500; color: #fff; letter-spacing: .04em; }
+
+.avatar-menu {
+  position: absolute; top: calc(var(--topbar-h) - 6px); right: 1.75rem;
+  background: rgba(12,10,24,0.95); border: 1px solid var(--brd);
+  border-radius: 12px; padding: 0.5rem; min-width: 200px; z-index: 200;
+  display: none; box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+.avatar-menu.open { display: block; }
+.avatar-menu-user { font-size: 0.82rem; color: var(--hi); padding: 0.5rem 0.75rem 0.1rem; font-weight: 400; }
+.avatar-menu-email { font-size: 0.72rem; color: var(--lo); padding: 0 0.75rem 0.5rem; }
+.avatar-menu-divider { height: 1px; background: var(--brd); margin: 0.25rem 0; }
+.avatar-menu-item { width: 100%; text-align: left; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: var(--mid); border-radius: 8px; transition: background .18s, color .18s; }
+.avatar-menu-item:hover { background: var(--surface); color: rgba(248,113,113,0.85); }
+
+/* ── Content ── */
+.content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.content::-webkit-scrollbar { width: 4px; }
+.content::-webkit-scrollbar-thumb { background: var(--very-lo); border-radius: 4px; }
+
+/* ══════════════════════════════════
+   TIMELINE CONTROLS BAR
+══════════════════════════════════ */
+.controls-bar {
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  padding: 1.1rem 1.75rem;
+  border-bottom: 1px solid var(--brd);
+  background: rgba(7,7,14,0.5);
+  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 30;
+  flex-shrink: 0;
+}
+
+.ctrl-group {
+  display: flex; align-items: center; gap: .3rem;
+}
+.ctrl-label {
+  font-size: .64rem; text-transform: uppercase; letter-spacing: .12em; color: var(--lo);
+  margin-right: .2rem; white-space: nowrap;
+}
+
+.range-pills {
+  display: flex; gap: .25rem;
+}
+.range-pill {
+  padding: .3rem .75rem; border-radius: 20px; font-size: .72rem;
+  border: 1px solid var(--brd); color: var(--lo);
+  transition: all .18s var(--ease);
+}
+.range-pill:hover { background: var(--surface); color: var(--mid); }
+.range-pill.active {
+  background: var(--accent-dim); color: var(--accent);
+  border-color: rgba(167,139,250,0.25);
+}
+
+.filter-chips { display: flex; gap: .25rem; }
+.filter-chip {
+  display: flex; align-items: center; gap: .3rem;
+  padding: .28rem .65rem; border-radius: 20px; font-size: .7rem;
+  border: 1px solid var(--brd); color: var(--lo);
+  transition: all .18s;
+}
+.filter-chip:hover { background: var(--surface); color: var(--mid); }
+.filter-chip.active { background: var(--accent-dim); color: var(--accent); border-color: rgba(167,139,250,0.25); }
+.filter-chip .chip-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+}
+.chip-dot-note { background: var(--accent); }
+.chip-dot-goal { background: var(--green); }
+.chip-dot-project { background: var(--yellow); }
+.chip-dot-task { background: var(--red); }
+
+.ctrl-divider { width: 1px; height: 20px; background: var(--brd); flex-shrink: 0; }
+
+.view-toggle {
+  display: flex; gap: .2rem;
+  background: var(--surface); border: 1px solid var(--brd); border-radius: 10px; padding: .2rem;
+}
+.view-btn {
+  padding: .28rem .65rem; border-radius: 7px; font-size: .7rem; color: var(--lo);
+  transition: all .18s;
+}
+.view-btn.active { background: var(--accent-dim); color: var(--accent); }
+
+.ctrl-spacer { flex: 1; }
+.ctrl-stat {
+  font-size: .7rem; color: var(--lo);
+  padding: .28rem .75rem;
+  background: var(--surface); border: 1px solid var(--brd); border-radius: 20px;
+}
+.ctrl-stat span { color: var(--accent); font-family: var(--serif); font-size: .85rem; }
+
+/* ══════════════════════════════════
+   HEATMAP STRIP
+══════════════════════════════════ */
+.heatmap-section {
+  padding: 1.2rem 1.75rem 0;
+  flex-shrink: 0;
+}
+.heatmap-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: .75rem;
+}
+.heatmap-title { font-family: var(--serif); font-size: .9rem; font-weight: 400; color: var(--hi); opacity: .7; }
+.heatmap-legend { display: flex; align-items: center; gap: .4rem; font-size: .62rem; color: var(--lo); }
+.heatmap-legend-cells { display: flex; gap: 2px; }
+.heatmap-legend-cell { width: 10px; height: 10px; border-radius: 2px; }
+
+.heatmap-grid {
+  display: flex; gap: 3px; align-items: flex-end;
+  overflow-x: auto; padding-bottom: .5rem;
+}
+.heatmap-grid::-webkit-scrollbar { height: 3px; }
+.heatmap-grid::-webkit-scrollbar-thumb { background: var(--very-lo); border-radius: 3px; }
+
+.heatmap-week { display: flex; flex-direction: column; gap: 3px; }
+.heatmap-cell {
+  width: 13px; height: 13px; border-radius: 2.5px;
+  transition: transform .15s, opacity .15s;
+  cursor: pointer; flex-shrink: 0;
+}
+.heatmap-cell:hover { transform: scale(1.4); }
+.hm-0 { background: rgba(167,139,250,0.06); }
+.hm-1 { background: rgba(124,58,237,0.22); }
+.hm-2 { background: rgba(124,58,237,0.42); }
+.hm-3 { background: rgba(124,58,237,0.62); }
+.hm-4 { background: rgba(167,139,250,0.85); box-shadow: 0 0 6px rgba(167,139,250,0.35); }
+
+.heatmap-months {
+  display: flex; gap: 3px; margin-top: .4rem; overflow-x: hidden;
+}
+.heatmap-month-label {
+  font-size: .58rem; color: var(--lo); letter-spacing: .06em; text-transform: uppercase;
+  flex-shrink: 0; white-space: nowrap;
+}
+
+/* ══════════════════════════════════
+   INSIGHT BANNER
+══════════════════════════════════ */
+.insight-banner {
+  margin: 1rem 1.75rem 0;
+  padding: .8rem 1.1rem;
+  background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(167,139,250,0.06));
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 12px;
+  display: flex; align-items: center; gap: 1rem;
+  flex-shrink: 0;
+}
+.insight-icon { font-size: 1.1rem; flex-shrink: 0; }
+.insight-text { font-size: .8rem; color: var(--mid); line-height: 1.5; }
+.insight-text strong { color: var(--accent); font-weight: 400; }
+.insight-nav { display: flex; gap: .3rem; margin-left: auto; flex-shrink: 0; }
+.insight-nav-btn {
+  width: 24px; height: 24px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--brd); color: var(--lo);
+  transition: all .18s;
+}
+.insight-nav-btn:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(167,139,250,0.25); }
+.insight-nav-btn svg { width: 10px; height: 10px; }
+
+/* ══════════════════════════════════
+   TIMELINE SCROLL AREA
+══════════════════════════════════ */
+.timeline-scroll {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 1.5rem 1.75rem 3rem;
+}
+.timeline-scroll::-webkit-scrollbar { width: 4px; }
+.timeline-scroll::-webkit-scrollbar-thumb { background: var(--very-lo); border-radius: 4px; }
+
+/* ── Date group ── */
+.tl-group { margin-bottom: 2.5rem; }
+
+.tl-group-header {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.25rem;
+  position: sticky; top: 0; z-index: 10;
+  padding: .4rem 0;
+}
+.tl-group-header::before {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+  background: linear-gradient(to right, var(--bg) 0%, rgba(7,7,14,0.9) 30%, transparent 100%);
+  z-index: -1;
+}
+.tl-date-badge {
+  font-family: var(--serif); font-size: 1.05rem; font-weight: 400;
+  color: var(--hi); letter-spacing: .04em; white-space: nowrap;
+}
+.tl-date-sub { font-size: .65rem; color: var(--lo); white-space: nowrap; }
+.tl-date-line { flex: 1; height: 1px; background: var(--brd); }
+.tl-date-count {
+  font-size: .62rem; color: var(--lo);
+  padding: .18rem .55rem; border: 1px solid var(--brd);
+  border-radius: 20px; white-space: nowrap;
+}
+
+/* ── Timeline vertical spine + cards ── */
+.tl-entries {
+  position: relative;
+  padding-left: 2.5rem;
+}
+.tl-entries::before {
+  content: '';
+  position: absolute; left: 7px; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(167,139,250,0.3), rgba(167,139,250,0.08) 80%, transparent);
+}
+
+.tl-entry {
+  position: relative;
+  margin-bottom: 1rem;
+  opacity: 0;
+  transform: translateX(-12px);
+  transition: opacity .45s var(--ease), transform .45s var(--ease);
+}
+.tl-entry.visible { opacity: 1; transform: translateX(0); }
+
+/* Node on the spine */
+.tl-entry::before {
+  content: '';
+  position: absolute; left: -2.5rem;
+  top: 50%; transform: translateY(-50%);
+  width: 9px; height: 9px; border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  background: var(--bg);
+  transition: background .2s, box-shadow .2s;
+}
+.tl-entry:hover::before {
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(167,139,250,0.5);
+}
+
+/* Connector line */
+.tl-entry::after {
+  content: '';
+  position: absolute; left: calc(-2.5rem + 9px); top: 50%;
+  width: calc(2.5rem - 9px - 4px); height: 1px;
+  background: rgba(167,139,250,0.15);
+  transform: translateY(-50%);
+}
+
+/* ── Card ── */
+.tl-card {
+  background: var(--surface);
+  border: 1px solid var(--brd);
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  cursor: pointer;
+  transition: background .2s, border-color .22s, transform .2s, box-shadow .22s;
+  position: relative;
+  overflow: hidden;
+}
+.tl-card::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  opacity: 0; transition: opacity .2s;
+  border-radius: 12px 0 0 12px;
+}
+.tl-card.type-note::before   { background: var(--accent); }
+.tl-card.type-goal::before   { background: var(--green); }
+.tl-card.type-project::before { background: var(--yellow); }
+.tl-card.type-task::before   { background: var(--red); }
+.tl-card:hover { background: var(--surface-hi); border-color: rgba(167,139,250,0.18); transform: translateX(4px); }
+.tl-card:hover::before { opacity: 1; }
+.tl-card.expanded { border-color: rgba(167,139,250,0.28); background: rgba(167,139,250,0.04); }
+.tl-card.expanded::before { opacity: 1; }
+
+.tl-card-header {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  margin-bottom: .5rem;
+}
+.tl-card-meta { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.tl-type-badge {
+  display: flex; align-items: center; gap: .28rem;
+  font-size: .58rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+  padding: .15rem .5rem; border-radius: 20px;
+}
+.tl-type-badge svg { width: 9px; height: 9px; }
+.badge-note    { background: rgba(167,139,250,0.12); color: var(--accent); }
+.badge-goal    { background: rgba(110,231,183,0.1); color: var(--green); }
+.badge-project { background: rgba(251,191,36,0.1); color: var(--yellow); }
+.badge-task    { background: rgba(248,113,113,0.1); color: var(--red); }
+
+.tl-card-time { font-size: .65rem; color: var(--lo); white-space: nowrap; }
+.tl-card-actions { display: flex; gap: .3rem; opacity: 0; transition: opacity .18s; }
+.tl-card:hover .tl-card-actions { opacity: 1; }
+.tl-action-btn {
+  width: 22px; height: 22px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--brd); color: var(--lo);
+  transition: all .15s;
+}
+.tl-action-btn:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(167,139,250,0.25); }
+.tl-action-btn svg { width: 10px; height: 10px; }
+
+.tl-card-title {
+  font-family: var(--serif); font-size: 1rem; font-weight: 400;
+  color: var(--hi); line-height: 1.3; margin-bottom: .35rem;
+  letter-spacing: .02em;
+}
+.tl-card-preview {
+  font-size: .76rem; color: var(--lo); line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.tl-card-tags { display: flex; gap: .3rem; flex-wrap: wrap; margin-top: .6rem; }
+.tl-tag {
+  font-size: .6rem; padding: .12rem .45rem; border-radius: 20px;
+  border: 1px solid var(--brd); color: var(--lo);
+}
+
+.tl-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: .65rem; padding-top: .55rem;
+  border-top: 1px solid var(--brd);
+}
+.tl-version-dots { display: flex; align-items: center; gap: .25rem; }
+.tl-version-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(167,139,250,0.25);
+  transition: background .15s;
+  cursor: pointer;
+}
+.tl-version-dot.latest { background: var(--accent); }
+.tl-version-dot:hover { background: var(--accent); }
+.tl-version-label { font-size: .6rem; color: var(--lo); margin-left: .15rem; }
+
+.tl-word-count { font-size: .62rem; color: var(--lo); display: flex; align-items: center; gap: .3rem; }
+.tl-word-count svg { width: 9px; height: 9px; }
+
+/* Expanded body */
+.tl-expanded-body {
+  margin-top: .85rem; padding-top: .85rem;
+  border-top: 1px solid var(--brd);
+  display: none;
+}
+.tl-card.expanded .tl-expanded-body { display: block; }
+.tl-expanded-body p { font-size: .8rem; color: var(--mid); line-height: 1.7; }
+.tl-expanded-meta {
+  display: flex; gap: 1.5rem; margin-top: .85rem; padding-top: .75rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.tl-expanded-meta-item { display: flex; flex-direction: column; gap: .2rem; }
+.tl-expanded-meta-label { font-size: .6rem; text-transform: uppercase; letter-spacing: .1em; color: var(--lo); }
+.tl-expanded-meta-value { font-size: .78rem; color: var(--hi); font-family: var(--serif); }
+
+/* Related notes highlight */
+.tl-card.related {
+  border-color: rgba(167,139,250,0.2);
+  background: rgba(167,139,250,0.03);
+}
+
+/* ── Cluster view ── */
+.tl-clusters { display: none; }
+.tl-clusters.active { display: block; }
+.tl-timeline.cluster-mode .tl-group { display: none; }
+.cluster-group {
+  margin-bottom: 2rem;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity .45s var(--ease), transform .45s var(--ease);
+}
+.cluster-group.visible { opacity: 1; transform: translateY(0); }
+.cluster-header {
+  display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem;
+}
+.cluster-badge {
+  padding: .3rem .85rem; border-radius: 20px; font-size: .72rem; font-weight: 500;
+  background: var(--accent-dim); color: var(--accent);
+  border: 1px solid rgba(167,139,250,0.2);
+}
+.cluster-count { font-size: .7rem; color: var(--lo); }
+.cluster-line  { flex: 1; height: 1px; background: var(--brd); }
+.cluster-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .85rem; }
+.cluster-card {
+  background: var(--surface); border: 1px solid var(--brd); border-radius: 12px;
+  padding: 1rem 1.1rem; cursor: pointer;
+  transition: all .2s;
+  opacity: 0; transform: translateY(8px);
+}
+.cluster-card.visible { opacity: 1; transform: translateY(0); }
+.cluster-card:hover { background: var(--surface-hi); border-color: rgba(167,139,250,0.18); transform: translateY(-2px); }
+.cluster-card-title { font-family: var(--serif); font-size: .95rem; color: var(--hi); margin-bottom: .3rem; }
+.cluster-card-date  { font-size: .65rem; color: var(--lo); margin-bottom: .5rem; }
+.cluster-card-preview { font-size: .74rem; color: var(--lo); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ── Empty state ── */
+.tl-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 4rem; gap: 1rem; color: var(--lo); text-align: center;
+}
+.tl-empty-icon { width: 48px; height: 48px; opacity: .3; }
+.tl-empty-title { font-family: var(--serif); font-size: 1.2rem; color: var(--mid); }
+.tl-empty-sub { font-size: .78rem; max-width: 280px; line-height: 1.6; }
+
+/* Tooltip */
+.tl-tooltip {
+  position: fixed; z-index: 500;
+  background: rgba(12,10,24,0.96); border: 1px solid var(--brd);
+  border-radius: 8px; padding: .4rem .75rem;
+  font-size: .7rem; color: var(--hi);
+  pointer-events: none; opacity: 0;
+  transition: opacity .15s;
+  max-width: 200px;
+}
+.tl-tooltip.show { opacity: 1; }
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 1100px) {
+  .ctrl-divider { display: none; }
+}
+@media (max-width: 860px) {
+  .controls-bar { gap: .6rem; }
+  .ctrl-label { display: none; }
+  .heatmap-section { display: none; }
+}
+@media (max-width: 620px) {
+  .sidebar { width: var(--sidebar-w-c) !important; }
+  .brand-text, .nav-label { opacity: 0 !important; pointer-events: none !important; }
+  .nav-item { padding: .6rem !important; justify-content: center !important; }
+  .controls-bar { padding: .75rem 1rem; }
+  .timeline-scroll { padding: 1rem 1rem 3rem; }
+  .tl-entries { padding-left: 1.75rem; }
+  .heatmap-section { padding: .75rem 1rem 0; }
+  .insight-banner { margin: .75rem 1rem 0; }
+  .cluster-cards { grid-template-columns: 1fr; }
+}
+
+
+/* ── 1. Remove blur() + unnecessary layer promotions from orbs ── */
+.bg-orb {
+  filter: none;
+  will-change: auto;
+  transform: none;
+}
+.orb-1 {
+  background: radial-gradient(circle, rgba(70,25,180,0.28) 0%, transparent 70%);
+}
+.orb-2 {
+  background: radial-gradient(circle, rgba(15,8,55,0.24) 0%, transparent 70%);
+}
+
+/* ── 2. Controls bar: remove backdrop-filter — biggest offender here ──
+   It sits sticky above a scrolling list. Every scroll frame forces
+   the browser to re-composite everything behind it through the blur. */
+.controls-bar {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(7,7,14,0.88); /* slightly more opaque to compensate */
+}
+
+/* ── 3. Contain layout/paint on major panels ── */
+.sidebar        { contain: layout style; }
+.sidebar-nav    { contain: layout style; }
+.tl-card        { contain: layout style paint; }
+.tl-entry       { contain: layout style; }
+.cluster-card   { contain: layout style paint; }
+.cluster-group  { contain: layout style; }
+.heatmap-cell   { contain: layout style paint; }
+.avatar-menu    { contain: layout style paint; }
+
+/* ── 4. Reset all transitions, restore only what's needed ── */
+*, *::before, *::after {
+  transition-property: none;
+}
+
+/* Sidebar */
+.sidebar            { transition: width 0.28s ease; }
+.sidebar-toggle     { transition: background 0.15s ease, color 0.15s ease; }
+.sidebar-toggle svg { transition: transform 0.28s ease; }
+.nav-item           { transition: background 0.14s ease, color 0.14s ease; }
+.sidebar.collapsed .nav-item::after { transition: opacity 0.13s ease; }
+
+/* Topbar */
+.search-pill        { transition: border-color 0.15s ease, background 0.15s ease; }
+.icon-btn           { transition: color 0.13s ease, background 0.13s ease; }
+.avatar-btn         { transition: box-shadow 0.15s ease; }
+.avatar-menu-item   { transition: background 0.13s ease, color 0.13s ease; }
+.panel-link         { transition: opacity 0.15s ease; }
+
+/* Controls bar */
+.range-pill         { transition: background 0.13s ease, color 0.13s ease, border-color 0.13s ease; }
+.filter-chip        { transition: background 0.13s ease, color 0.13s ease, border-color 0.13s ease; }
+.view-btn           { transition: background 0.13s ease, color 0.13s ease; }
+.insight-nav-btn    { transition: background 0.13s ease, color 0.13s ease, border-color 0.13s ease; }
+.insight-text       { transition: opacity 0.18s ease; }
+
+/* Heatmap */
+.heatmap-cell       { transition: transform 0.13s ease, opacity 0.13s ease; }
+
+/* Timeline cards — keep reveal, it's a one-shot IntersectionObserver trigger */
+.tl-entry           { transition: opacity 0.4s ease, transform 0.4s ease; }
+.cluster-group      { transition: opacity 0.4s ease, transform 0.4s ease; }
+.cluster-card       { transition: opacity 0.35s ease, transform 0.35s ease, background 0.13s ease, border-color 0.13s ease; }
+
+/* Card interactions */
+.tl-card            { transition: background 0.15s ease, border-color 0.18s ease, transform 0.15s ease; }
+.tl-card::before    { transition: opacity 0.18s ease; }
+.tl-card-actions    { transition: opacity 0.15s ease; }
+.tl-action-btn      { transition: background 0.13s ease, color 0.13s ease, border-color 0.13s ease; }
+.tl-version-dot     { transition: background 0.13s ease; }
+
+/* Spine node */
+.tl-entry::before   { transition: background 0.15s ease, box-shadow 0.15s ease; }
+
+/* Tooltip */
+.tl-tooltip         { transition: opacity 0.13s ease; }
+
+/* ── 5. Slow ring animations ── */
+.r1 { animation-duration: 40s; }
+.r2 { animation-duration: 24s; }
+
+@keyframes slowSpin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ── 6. bm-dot: filter instead of box-shadow on animated parent ── */
+.bm-dot {
+  box-shadow: none;
+  filter: drop-shadow(0 0 4px rgba(167,139,250,0.3));
+}
+
+/* ── 7. hm-4 (max activity cell): drop-shadow cheaper than box-shadow ── */
+.hm-4 {
+  background: rgba(167,139,250,0.85);
+  box-shadow: none;
+  filter: drop-shadow(0 0 3px rgba(167,139,250,0.3));
+}
+
+/* ── 8. tl-entry hover node: no box-shadow recompute on scroll ──
+   box-shadow on ::before pseudos is fine since it only triggers on hover,
+   but we can use outline to avoid the blur cost entirely.              */
+.tl-entry:hover::before {
+  background: var(--accent);
+  box-shadow: none;
+  outline: 3px solid rgba(167,139,250,0.3);
+  outline-offset: 1px;
+}
+
+/* ── 9. Cluster card hover: no transform reflow ── */
+.cluster-card:hover {
+  background: var(--surface-hi);
+  border-color: rgba(167,139,250,0.18);
+  transform: translateY(-2px);
+}
+</style>
+  </style>
+</head>
+<body>
+
+<div class="bg-base"></div>
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+
+<div class="app-shell" id="appShell">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">
+        <div class="bm-ring r1"></div>
+        <div class="bm-ring r2"></div>
+        <div class="bm-dot"></div>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Minerva</span>
+        <span class="brand-tag">Digital Brain</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <a href="../dashboard/dashboard.html" class="nav-item" data-label="Dashboard">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+        </span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a href="../notes/notes.html" class="nav-item" data-label="Notes">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 4h12v10H4V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><line x1="7" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1"/><line x1="7" y1="11" x2="11" y2="11" stroke="currentColor" stroke-width="1"/></svg>
+        </span>
+        <span class="nav-label">Notes</span>
+      </a>
+      <a href="../goals/goals.html" class="nav-item" data-label="Goals">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="10" r="3.5" stroke="currentColor" stroke-width="1"/><circle cx="10" cy="10" r="1" fill="currentColor"/></svg>
+        </span>
+        <span class="nav-label">Goals</span>
+      </a>
+      <a href="../analytics/analytics.html" class="nav-item" data-label="Analytics">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><polyline points="3,15 7,9 11,12 15,5 17,7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="nav-label">Analytics</span>
+      </a>
+      <a href="../graph/graph.html" class="nav-item" data-label="Graph">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="4" cy="5" r="1.5" stroke="currentColor" stroke-width="1"/><circle cx="16" cy="5" r="1.5" stroke="currentColor" stroke-width="1"/><circle cx="4" cy="15" r="1.5" stroke="currentColor" stroke-width="1"/><circle cx="16" cy="15" r="1.5" stroke="currentColor" stroke-width="1"/><line x1="5.5" y1="6" x2="8.5" y2="8.5" stroke="currentColor" stroke-width="1"/><line x1="14.5" y1="6" x2="11.5" y2="8.5" stroke="currentColor" stroke-width="1"/><line x1="5.5" y1="14" x2="8.5" y2="11.5" stroke="currentColor" stroke-width="1"/><line x1="14.5" y1="14" x2="11.5" y2="11.5" stroke="currentColor" stroke-width="1"/></svg>
+        </span>
+        <span class="nav-label">Graph</span>
+      </a>
+      <a href="#" class="nav-item active" data-label="Timeline">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><line x1="10" y1="2" x2="10" y2="18" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="5" r="2" stroke="currentColor" stroke-width="1"/><circle cx="10" cy="10" r="2" fill="currentColor" opacity=".4"/><circle cx="10" cy="15" r="2" stroke="currentColor" stroke-width="1"/><line x1="10" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1"/><line x1="10" y1="10" x2="5" y2="10" stroke="currentColor" stroke-width="1"/><line x1="10" y1="15" x2="15" y2="15" stroke="currentColor" stroke-width="1"/></svg>
+        </span>
+        <span class="nav-label">Timeline</span>
+      </a>
+      <div class="nav-divider"></div>
+      <a href="../settings/settings.html" class="nav-item" data-label="Settings">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </span>
+        <span class="nav-label">Settings</span>
+      </a>
+    </nav>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main-wrap">
+
+    <!-- Topbar -->
+    <header class="topbar" id="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Timeline</h1>
+        <p class="page-date" id="pageDate"></p>
+      </div>
+      <div class="topbar-right">
+        <div class="search-pill">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4" stroke="currentColor" stroke-width="1.2"/><line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <input type="text" placeholder="Search timeline…" class="search-input" id="tlSearch" />
+        </div>
+        <button class="icon-btn" aria-label="Notifications">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 016 6c0 3 1 4 2 5H2c1-1 2-2 2-5a6 6 0 016-6z" stroke="currentColor" stroke-width="1.3"/><path d="M8.5 17a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+        <button class="avatar-btn" id="avatarBtn" aria-label="Profile">
+          <span class="avatar-initials" id="avatarInitials">TM</span>
+        </button>
+        <div class="avatar-menu" id="avatarMenu">
+          <div class="avatar-menu-user" id="avatarMenuName"></div>
+          <div class="avatar-menu-email" id="avatarMenuEmail"></div>
+          <div class="avatar-menu-divider"></div>
+          <button class="avatar-menu-item" id="logoutBtn">Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Content ── -->
+    <div class="content" id="content">
+
+      <!-- Controls Bar -->
+      <div class="controls-bar">
+
+        <div class="ctrl-group">
+          <span class="ctrl-label">Range</span>
+          <div class="range-pills">
+            <button class="range-pill" data-range="7">7d</button>
+            <button class="range-pill active" data-range="30">30d</button>
+            <button class="range-pill" data-range="90">90d</button>
+            <button class="range-pill" data-range="365">1y</button>
+            <button class="range-pill" data-range="all">All</button>
+          </div>
+        </div>
+
+        <div class="ctrl-divider"></div>
+
+        <div class="ctrl-group">
+          <span class="ctrl-label">Filter</span>
+          <div class="filter-chips">
+            <button class="filter-chip active" data-filter="note">
+              <span class="chip-dot chip-dot-note"></span> Notes
+            </button>
+            <button class="filter-chip active" data-filter="goal">
+              <span class="chip-dot chip-dot-goal"></span> Goals
+            </button>
+            <button class="filter-chip active" data-filter="project">
+              <span class="chip-dot chip-dot-project"></span> Projects
+            </button>
+            <button class="filter-chip active" data-filter="task">
+              <span class="chip-dot chip-dot-task"></span> Tasks
+            </button>
+          </div>
+        </div>
+
+        <div class="ctrl-divider"></div>
+
+        <div class="ctrl-group">
+          <div class="view-toggle">
+            <button class="view-btn active" id="viewChronBtn">Chronological</button>
+            <button class="view-btn" id="viewClusterBtn">By Topic</button>
+          </div>
+        </div>
+
+        <div class="ctrl-spacer"></div>
+
+        <div class="ctrl-stat" id="entryCount"><span id="entryCountNum">0</span> entries</div>
+      </div>
+
+      <!-- Heatmap -->
+      <div class="heatmap-section">
+        <div class="heatmap-header">
+          <span class="heatmap-title">Activity · Past Year</span>
+          <div class="heatmap-legend">
+            <span>Less</span>
+            <div class="heatmap-legend-cells">
+              <div class="heatmap-legend-cell hm-0"></div>
+              <div class="heatmap-legend-cell hm-1"></div>
+              <div class="heatmap-legend-cell hm-2"></div>
+              <div class="heatmap-legend-cell hm-3"></div>
+              <div class="heatmap-legend-cell hm-4"></div>
+            </div>
+            <span>More</span>
+          </div>
+        </div>
+        <div class="heatmap-grid" id="heatmapGrid"></div>
+        <div class="heatmap-months" id="heatmapMonths"></div>
+      </div>
+
+      <!-- Insight Banner -->
+      <div class="insight-banner" id="insightBanner">
+        <div class="insight-icon">✦</div>
+        <div class="insight-text" id="insightText">Loading insights…</div>
+        <div class="insight-nav">
+          <button class="insight-nav-btn" id="insightPrev">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M6 2L3 5l3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </button>
+          <button class="insight-nav-btn" id="insightNext">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M4 2L7 5l-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Timeline Area -->
+      <div class="timeline-scroll" id="timelineScroll">
+
+        <!-- Chronological view -->
+        <div class="tl-timeline" id="tlChronView"></div>
+
+        <!-- Cluster view -->
+        <div class="tl-clusters" id="tlClusterView"></div>
+
+      </div>
+    </div><!-- /content -->
+  </div><!-- /main-wrap -->
+</div><!-- /app-shell -->
+
+<!-- Tooltip -->
+<div class="tl-tooltip" id="tlTooltip"></div>
+
+<script>
+/* =====================================================
+   MINERVA — timeline.js
+   ===================================================== */
+
+// ── Auth Guard ────────────────────────────────────────
+const token = localStorage.getItem('token');
+const user  = JSON.parse(localStorage.getItem('user') || 'null');
+
+if (!token || !user) {
+  // Uncomment when backend is live:
+  // window.location.href = '../auth/login.html';
+}
+
+// ── Populate user info ────────────────────────────────
+if (user) {
+  const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const avatarEl = document.getElementById('avatarInitials');
+  if (avatarEl) avatarEl.textContent = initials;
+  const menuName  = document.getElementById('avatarMenuName');
+  const menuEmail = document.getElementById('avatarMenuEmail');
+  if (menuName)  menuName.textContent  = user.name;
+  if (menuEmail) menuEmail.textContent = user.email;
+}
+
+const dateEl = document.getElementById('pageDate');
+if (dateEl) {
+  const now = new Date();
+  const name = user ? user.name.split(' ')[0] : 'you';
+  dateEl.textContent = `${now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}`;
+}
+
+// ── Avatar menu ───────────────────────────────────────
+const avatarBtn  = document.getElementById('avatarBtn');
+const avatarMenu = document.getElementById('avatarMenu');
+avatarBtn.addEventListener('click', e => { e.stopPropagation(); avatarMenu.classList.toggle('open'); });
+document.addEventListener('click', () => avatarMenu.classList.remove('open'));
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '../auth/login.html';
+});
+
+// ── Sidebar toggle ────────────────────────────────────
+const sidebar       = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebarToggle');
+sidebarToggle.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+
+// ── Active nav ────────────────────────────────────────
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', e => {
+    if (item.getAttribute('href') === '#') {
+      e.preventDefault();
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    }
+  });
+});
+
+// ══════════════════════════════════════════════════════
+// DEMO DATA — replace fetch() calls with real API
+// ══════════════════════════════════════════════════════
+const DEMO_ENTRIES = [
+  // Today / recent
+  { id:'e1',  type:'note',    title:'Graph-based knowledge retrieval', preview:'Using bidirectional links to surface related concepts automatically when a new note is created. The key insight is that relevance is transitive — if A is linked to B and B is linked to C, surfacing C when writing about A creates serendipitous connections.', tags:['PKM','Knowledge Graph'], createdAt: daysAgo(0, 10), updatedAt: daysAgo(0, 2), versions:3, wordCount:412 },
+  { id:'e2',  type:'goal',    title:'Complete Minerva MVP', preview:'Ship a fully functional personal intelligence system with notes, graph view, analytics, and timeline. Focus on polish and meaningful interactions over feature count.', tags:['Minerva','Product'], createdAt: daysAgo(0, 14), updatedAt: daysAgo(0, 1), versions:5, wordCount:238, progress:72 },
+  { id:'e3',  type:'note',    title:'Zettelkasten atomic note principles', preview:'Each note should contain exactly one idea. Linking is more valuable than categorising. Permanent notes vs fleeting notes vs literature notes — the distinction matters for longevity of the knowledge base.', tags:['PKM','Zettelkasten'], createdAt: daysAgo(1, 9), updatedAt: daysAgo(1, 9), versions:1, wordCount:189 },
+  { id:'e4',  type:'task',    title:'Auth page redesign complete', preview:'Cleaned up the login/register flow. Removed redundant fields, added password strength indicator, improved error messaging throughout the auth flow.', tags:['Minerva','Design'], createdAt: daysAgo(1, 15), updatedAt: daysAgo(1, 15), versions:1, wordCount:94 },
+  { id:'e5',  type:'note',    title:'Dashboard layout decisions', preview:'Sidebar should collapse to icons only on narrower viewports. Keep max content width at 1200px. Stat cards in a 4-column grid that reflows gracefully.', tags:['Minerva','Design'], createdAt: daysAgo(2, 11), updatedAt: daysAgo(2, 11), versions:2, wordCount:156 },
+  { id:'e6',  type:'project', title:'Minerva — Personal Intelligence System', preview:'Full-stack personal PKM application. Node.js / Express backend, vanilla HTML/CSS/JS frontend. Glassmorphism dark aesthetic.', tags:['Minerva','Fullstack'], createdAt: daysAgo(3, 10), updatedAt: daysAgo(0, 8), versions:12, wordCount:1840 },
+  { id:'e7',  type:'note',    title:'Smart suggestion engine concept', preview:'Surface notes older than 30 days that share 3+ linked concepts with currently active notes. Could use TF-IDF or embeddings for semantic similarity.', tags:['PKM','AI','Minerva'], createdAt: daysAgo(3, 16), updatedAt: daysAgo(3, 16), versions:1, wordCount:203 },
+  { id:'e8',  type:'goal',    title:'Read 12 books this year', preview:'Track reading habit across the year. Currently at 5 of 12. Focus on non-fiction and technical material.', tags:['Learning','Habits'], createdAt: daysAgo(5, 9), updatedAt: daysAgo(2, 10), versions:4, wordCount:78, progress:45 },
+  { id:'e9',  type:'note',    title:'Operating systems — memory management deep dive', preview:'Virtual memory, paging, segmentation. The TLB is a hardware cache for page table entries. Page faults trigger the OS to bring pages from disk into RAM — demand paging.', tags:['OS','CS','Learning'], createdAt: daysAgo(7, 14), updatedAt: daysAgo(7, 14), versions:2, wordCount:634 },
+  { id:'e10', type:'note',    title:'TCP/IP handshake and congestion control', preview:'Three-way handshake: SYN → SYN-ACK → ACK. CWND starts slow, grows exponentially until threshold. AIMD — additive increase, multiplicative decrease on packet loss.', tags:['Networking','CS'], createdAt: daysAgo(8, 10), updatedAt: daysAgo(8, 10), versions:1, wordCount:445 },
+  { id:'e11', type:'goal',    title:'Daily journaling habit', preview:'27 day streak maintained. Write at least 200 words of reflection each morning before starting work.', tags:['Habits','Wellbeing'], createdAt: daysAgo(10, 8), updatedAt: daysAgo(0, 7), versions:27, wordCount:5420, progress:90 },
+  { id:'e12', type:'note',    title:'Process scheduling algorithms compared', preview:'FCFS, SJF, Round Robin, Priority Scheduling, MLFQ. The multi-level feedback queue is used by most modern OS kernels because it approximates SJF without needing burst time estimates.', tags:['OS','CS','Learning'], createdAt: daysAgo(10, 13), updatedAt: daysAgo(10, 13), versions:2, wordCount:512 },
+  { id:'e13', type:'task',    title:'Set up Express backend with JWT auth', preview:'Implemented /api/auth/register, /api/auth/login, /api/auth/me endpoints. Middleware for token verification.', tags:['Minerva','Backend'], createdAt: daysAgo(12, 11), updatedAt: daysAgo(12, 11), versions:1, wordCount:67 },
+  { id:'e14', type:'note',    title:'TypeScript generics and conditional types', preview:'Generic constraints with extends. infer keyword for extracting types from conditional branches. Mapped types for transforming object shapes. Utility types: Partial, Required, Pick, Omit, Extract.', tags:['TypeScript','Learning'], createdAt: daysAgo(14, 15), updatedAt: daysAgo(10, 9), versions:3, wordCount:387 },
+  { id:'e15', type:'goal',    title:'Learn TypeScript deeply', preview:'Working through the TypeScript Handbook and building Minerva in TS. Focus on advanced patterns: generics, decorators, utility types.', tags:['TypeScript','Learning'], createdAt: daysAgo(15, 9), updatedAt: daysAgo(5, 11), versions:6, wordCount:312, progress:30 },
+  { id:'e16', type:'note',    title:'Consistency models in distributed systems', preview:'Strong consistency, eventual consistency, causal consistency. CAP theorem trade-offs. CRDT data structures for conflict-free replication. Vector clocks for causality tracking.', tags:['DistributedSystems','CS'], createdAt: daysAgo(18, 10), updatedAt: daysAgo(18, 10), versions:1, wordCount:501 },
+  { id:'e17', type:'note',    title:'React reconciliation and the Fiber architecture', preview:'The Fiber reconciler enables incremental rendering by splitting work into chunks. Priority lanes allow interruptions for high-priority updates. useTransition marks state updates as non-urgent.', tags:['React','Frontend','Learning'], createdAt: daysAgo(20, 14), updatedAt: daysAgo(16, 10), versions:2, wordCount:289 },
+  { id:'e18', type:'project', title:'Data Structures & Algorithms study plan', preview:'Systematic review of DSA for technical interviews and deep CS understanding. 90-day plan covering arrays, trees, graphs, DP.', tags:['CS','Learning','Goals'], createdAt: daysAgo(22, 9), updatedAt: daysAgo(8, 15), versions:8, wordCount:724 },
+  { id:'e19', type:'note',    title:'Red-black trees vs AVL trees trade-offs', preview:'AVL trees are more strictly balanced — faster lookup. Red-black trees allow up to 2× height imbalance — faster insertions and deletions. HashMap internals in Java use red-black trees for collision buckets.', tags:['DSA','CS'], createdAt: daysAgo(23, 11), updatedAt: daysAgo(23, 11), versions:1, wordCount:334 },
+  { id:'e20', type:'note',    title:'Dynamic programming: memoization vs tabulation', preview:'Top-down DP = recursion + memoization. Bottom-up DP = tabulation. Tabulation is cache-friendly and avoids stack overflow. Classic problems: LCS, LIS, 0/1 Knapsack, Edit Distance.', tags:['DSA','CS','Learning'], createdAt: daysAgo(25, 10), updatedAt: daysAgo(20, 14), versions:3, wordCount:491 },
+];
+
+function daysAgo(d, h = 12) {
+  const dt = new Date();
+  dt.setDate(dt.getDate() - d);
+  dt.setHours(h, 0, 0, 0);
+  return dt.toISOString();
+}
+
+// ── State ─────────────────────────────────────────────
+let activeRange   = 30;
+let activeFilters = new Set(['note','goal','project','task']);
+let currentView   = 'chronological';
+let expandedCard  = null;
+
+// ── Insights ──────────────────────────────────────────
+const INSIGHTS = [
+  () => {
+    const topTag = topTagFromEntries(filteredEntries());
+    return `You've been consistently focused on <strong>${topTag}</strong> — your notes in this area show deepening engagement over the past month.`;
+  },
+  () => {
+    const notes = filteredEntries().filter(e => e.type === 'note');
+    return `You've written <strong>${notes.length} notes</strong> recently, with an average of <strong>${Math.round(notes.reduce((s,e)=>s+e.wordCount,0)/Math.max(notes.length,1))} words each</strong> — a solid habit of capturing ideas.`;
+  },
+  () => {
+    const goals = filteredEntries().filter(e => e.type === 'goal');
+    const avg   = goals.length ? Math.round(goals.reduce((s,e)=>s+(e.progress||0),0)/goals.length) : 0;
+    return `Your active goals are <strong>${avg}% complete on average</strong>. The journaling streak goal shows the most consistent progress.`;
+  },
+  () => {
+    const burst = burstDay(filteredEntries());
+    return `Your most productive day recently was <strong>${burst}</strong> — you captured the most entries that day. Your brain was clearly in flow.`;
+  },
+  () => {
+    const versioned = filteredEntries().filter(e => e.versions > 2);
+    return `<strong>${versioned.length} ideas</strong> have been revisited and refined multiple times — a sign of genuine intellectual depth, not just collection.`;
+  },
+];
+
+let insightIdx = 0;
+function topTagFromEntries(entries) {
+  const map = {};
+  entries.forEach(e => e.tags.forEach(t => { map[t] = (map[t]||0)+1; }));
+  return Object.entries(map).sort((a,b)=>b[1]-a[1])[0]?.[0] || 'PKM';
+}
+function burstDay(entries) {
+  const map = {};
+  entries.forEach(e => {
+    const d = new Date(e.createdAt).toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric'});
+    map[d] = (map[d]||0)+1;
+  });
+  return Object.entries(map).sort((a,b)=>b[1]-a[1])[0]?.[0] || 'Monday';
+}
+
+function showInsight(idx) {
+  const el = document.getElementById('insightText');
+  if (!el) return;
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.innerHTML = INSIGHTS[idx]();
+    el.style.opacity = '1';
+  }, 180);
+}
+document.getElementById('insightPrev').addEventListener('click', () => {
+  insightIdx = (insightIdx - 1 + INSIGHTS.length) % INSIGHTS.length;
+  showInsight(insightIdx);
+});
+document.getElementById('insightNext').addEventListener('click', () => {
+  insightIdx = (insightIdx + 1) % INSIGHTS.length;
+  showInsight(insightIdx);
+});
+
+// ── Filtering ─────────────────────────────────────────
+function filteredEntries() {
+  const cutoff = new Date();
+  if (activeRange !== 'all') cutoff.setDate(cutoff.getDate() - activeRange);
+  const search = document.getElementById('tlSearch')?.value.trim().toLowerCase() || '';
+  return DEMO_ENTRIES.filter(e => {
+    const withinRange = activeRange === 'all' || new Date(e.createdAt) >= cutoff;
+    const typeMatch   = activeFilters.has(e.type);
+    const searchMatch = !search || e.title.toLowerCase().includes(search) || e.tags.some(t=>t.toLowerCase().includes(search));
+    return withinRange && typeMatch && searchMatch;
+  }).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+// ── Controls wiring ───────────────────────────────────
+document.querySelectorAll('.range-pill').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.range-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeRange = btn.dataset.range === 'all' ? 'all' : parseInt(btn.dataset.range);
+    renderAll();
+  });
+});
+
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const f = chip.dataset.filter;
+    if (activeFilters.has(f)) {
+      if (activeFilters.size > 1) { activeFilters.delete(f); chip.classList.remove('active'); }
+    } else {
+      activeFilters.add(f); chip.classList.add('active');
+    }
+    renderAll();
+  });
+});
+
+document.getElementById('viewChronBtn').addEventListener('click', () => {
+  currentView = 'chronological';
+  document.getElementById('viewChronBtn').classList.add('active');
+  document.getElementById('viewClusterBtn').classList.remove('active');
+  document.getElementById('tlChronView').style.display = 'block';
+  document.getElementById('tlClusterView').style.display = 'none';
+});
+document.getElementById('viewClusterBtn').addEventListener('click', () => {
+  currentView = 'cluster';
+  document.getElementById('viewClusterBtn').classList.add('active');
+  document.getElementById('viewChronBtn').classList.remove('active');
+  document.getElementById('tlChronView').style.display = 'none';
+  document.getElementById('tlClusterView').style.display = 'block';
+});
+
+document.getElementById('tlSearch').addEventListener('input', () => {
+  clearTimeout(window._searchDebounce);
+  window._searchDebounce = setTimeout(renderAll, 220);
+});
+
+// ── Time helpers ──────────────────────────────────────
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric', year:'numeric'});
+}
+function formatDateShort(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US',{month:'short', day:'numeric'});
+}
+function formatTime(iso) {
+  const d = new Date(iso);
+  return d.toLocaleTimeString('en-US',{hour:'numeric', minute:'2-digit', hour12:true});
+}
+function timeAgo(iso) {
+  const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (s < 60)     return 'Just now';
+  if (s < 3600)   return Math.floor(s/60)+'m ago';
+  if (s < 86400)  return Math.floor(s/3600)+'h ago';
+  if (s < 172800) return 'Yesterday';
+  return Math.floor(s/86400)+'d ago';
+}
+function groupByDate(entries) {
+  const groups = {};
+  entries.forEach(e => {
+    const key = new Date(e.createdAt).toDateString();
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(e);
+  });
+  return groups;
+}
+function groupByTopic(entries) {
+  const groups = {};
+  entries.forEach(e => {
+    const tag = e.tags[0] || 'Uncategorised';
+    if (!groups[tag]) groups[tag] = [];
+    groups[tag].push(e);
+  });
+  return groups;
+}
+
+// ── Icon SVGs ─────────────────────────────────────────
+const TYPE_ICONS = {
+  note:    `<svg viewBox="0 0 12 12" fill="none"><path d="M2 2h8v7H2V2z" stroke="currentColor" stroke-width="1"/><line x1="4" y1="4.5" x2="8" y2="4.5" stroke="currentColor" stroke-width=".8"/><line x1="4" y1="6.5" x2="7" y2="6.5" stroke="currentColor" stroke-width=".8"/></svg>`,
+  goal:    `<svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="2" stroke="currentColor" stroke-width=".8"/><circle cx="6" cy="6" r=".8" fill="currentColor"/></svg>`,
+  project: `<svg viewBox="0 0 12 12" fill="none"><rect x="1.5" y="1.5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/></svg>`,
+  task:    `<svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 4.5,8.5 10,3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+};
+const TYPE_BADGE_CLASS = {note:'badge-note', goal:'badge-goal', project:'badge-project', task:'badge-task'};
+
+// ── Render entry card ─────────────────────────────────
+function buildCard(entry) {
+  const card = document.createElement('div');
+  card.className = `tl-entry`;
+  card.dataset.id = entry.id;
+
+  const versionDots = Array.from({length: Math.min(entry.versions, 5)}, (_, i) =>
+    `<span class="tl-version-dot ${i === Math.min(entry.versions,5)-1 ? 'latest' : ''}" title="v${i+1}"></span>`
+  ).join('');
+
+  card.innerHTML = `
+    <div class="tl-card type-${entry.type}" data-id="${entry.id}">
+      <div class="tl-card-header">
+        <div class="tl-card-meta">
+          <span class="tl-type-badge ${TYPE_BADGE_CLASS[entry.type]}">
+            ${TYPE_ICONS[entry.type]} ${entry.type}
+          </span>
+          ${entry.tags.slice(0,2).map(t=>`<span class="tl-tag">${t}</span>`).join('')}
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <span class="tl-card-time">${timeAgo(entry.createdAt)}</span>
+          <div class="tl-card-actions">
+            <button class="tl-action-btn" title="Expand">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M4 2H2v6h6V6M6 2h2v2M4 6L8 2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <h3 class="tl-card-title">${entry.title}</h3>
+      <p class="tl-card-preview">${entry.preview}</p>
+      <div class="tl-card-footer">
+        <div class="tl-version-dots">
+          ${versionDots}
+          <span class="tl-version-label">${entry.versions === 1 ? 'original' : `${entry.versions} versions`}</span>
+        </div>
+        <div class="tl-word-count">
+          <svg viewBox="0 0 10 10" fill="none"><path d="M1 3h8M1 5h6M1 7h4" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/></svg>
+          ${entry.wordCount.toLocaleString()} words
+        </div>
+      </div>
+      <div class="tl-expanded-body">
+        <p>${entry.preview} This note has been revisited and refined ${entry.versions} time${entry.versions !== 1 ? 's' : ''}. The ideas here connect strongly to your broader knowledge graph.</p>
+        <div class="tl-expanded-meta">
+          <div class="tl-expanded-meta-item">
+            <span class="tl-expanded-meta-label">Created</span>
+            <span class="tl-expanded-meta-value">${formatDateShort(entry.createdAt)} · ${formatTime(entry.createdAt)}</span>
+          </div>
+          <div class="tl-expanded-meta-item">
+            <span class="tl-expanded-meta-label">Last edited</span>
+            <span class="tl-expanded-meta-value">${formatDateShort(entry.updatedAt)} · ${formatTime(entry.updatedAt)}</span>
+          </div>
+          <div class="tl-expanded-meta-item">
+            <span class="tl-expanded-meta-label">Versions</span>
+            <span class="tl-expanded-meta-value">${entry.versions}</span>
+          </div>
+          <div class="tl-expanded-meta-item">
+            <span class="tl-expanded-meta-label">Words</span>
+            <span class="tl-expanded-meta-value">${entry.wordCount.toLocaleString()}</span>
+          </div>
+          ${entry.progress !== undefined ? `
+          <div class="tl-expanded-meta-item">
+            <span class="tl-expanded-meta-label">Progress</span>
+            <span class="tl-expanded-meta-value">${entry.progress}%</span>
+          </div>` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Expand / collapse
+  const innerCard = card.querySelector('.tl-card');
+  innerCard.addEventListener('click', () => {
+    const isExpanded = innerCard.classList.contains('expanded');
+    // Collapse all
+    document.querySelectorAll('.tl-card.expanded').forEach(c => c.classList.remove('expanded'));
+    if (!isExpanded) innerCard.classList.add('expanded');
+  });
+
+  return card;
+}
+
+// ── Render chronological view ─────────────────────────
+function renderChronological(entries) {
+  const container = document.getElementById('tlChronView');
+  container.innerHTML = '';
+
+  if (entries.length === 0) {
+    container.innerHTML = `
+      <div class="tl-empty">
+        <svg class="tl-empty-icon" viewBox="0 0 48 48" fill="none">
+          <line x1="24" y1="4" x2="24" y2="44" stroke="rgba(167,139,250,0.3)" stroke-width="1.5"/>
+          <circle cx="24" cy="14" r="4" stroke="rgba(167,139,250,0.3)" stroke-width="1.5"/>
+          <circle cx="24" cy="28" r="4" stroke="rgba(167,139,250,0.3)" stroke-width="1.5"/>
+        </svg>
+        <div class="tl-empty-title">Nothing found</div>
+        <div class="tl-empty-sub">Try adjusting your filters or expanding the date range.</div>
+      </div>`;
+    return;
+  }
+
+  const groups = groupByDate(entries);
+
+  Object.entries(groups).forEach(([dateStr, dayEntries]) => {
+    const group = document.createElement('div');
+    group.className = 'tl-group';
+
+    const d = new Date(dateStr);
+    const isToday     = new Date().toDateString() === dateStr;
+    const isYesterday = new Date(Date.now()-86400000).toDateString() === dateStr;
+    const label       = isToday ? 'Today' : isYesterday ? 'Yesterday' : d.toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric'});
+    const sub         = isToday || isYesterday ? d.toLocaleDateString('en-US',{month:'long', day:'numeric', year:'numeric'}) : d.getFullYear().toString();
+
+    group.innerHTML = `
+      <div class="tl-group-header">
+        <span class="tl-date-badge">${label}</span>
+        <span class="tl-date-sub">${sub}</span>
+        <div class="tl-date-line"></div>
+        <span class="tl-date-count">${dayEntries.length} entr${dayEntries.length === 1 ? 'y' : 'ies'}</span>
+      </div>
+      <div class="tl-entries" id="entries-${d.getTime()}"></div>
+    `;
+
+    container.appendChild(group);
+
+    const entriesEl = group.querySelector('.tl-entries');
+    dayEntries.forEach((entry, i) => {
+      const card = buildCard(entry);
+      card.style.transitionDelay = (i * 55) + 'ms';
+      entriesEl.appendChild(card);
+    });
+  });
+
+  // Intersection observer
+  scheduleReveal('.tl-entry');
+}
+
+// ── Render cluster view ───────────────────────────────
+function renderCluster(entries) {
+  const container = document.getElementById('tlClusterView');
+  container.innerHTML = '';
+
+  const groups = groupByTopic(entries);
+
+  Object.entries(groups)
+    .sort((a,b) => b[1].length - a[1].length)
+    .forEach(([ tag, tagEntries ], gi) => {
+      const group = document.createElement('div');
+      group.className = 'cluster-group';
+      group.style.transitionDelay = (gi * 60) + 'ms';
+
+      group.innerHTML = `
+        <div class="cluster-header">
+          <span class="cluster-badge">${tag}</span>
+          <span class="cluster-count">${tagEntries.length} entr${tagEntries.length===1?'y':'ies'}</span>
+          <div class="cluster-line"></div>
+        </div>
+        <div class="cluster-cards" id="cluster-${gi}"></div>
+      `;
+
+      container.appendChild(group);
+
+      const cardsEl = group.querySelector('.cluster-cards');
+      tagEntries.slice(0, 6).forEach((entry, i) => {
+        const card = document.createElement('div');
+        card.className = 'cluster-card';
+        card.style.transitionDelay = (i * 45) + 'ms';
+        card.innerHTML = `
+          <div class="tl-card-meta" style="margin-bottom:.4rem;">
+            <span class="tl-type-badge ${TYPE_BADGE_CLASS[entry.type]}">${TYPE_ICONS[entry.type]} ${entry.type}</span>
+          </div>
+          <div class="cluster-card-title">${entry.title}</div>
+          <div class="cluster-card-date">${formatDateShort(entry.createdAt)} · ${entry.versions} version${entry.versions!==1?'s':''}</div>
+          <div class="cluster-card-preview">${entry.preview}</div>
+        `;
+        cardsEl.appendChild(card);
+      });
+    });
+
+  scheduleReveal('.cluster-group, .cluster-card');
+}
+
+// ── Intersection Observer for reveals ─────────────────
+function scheduleReveal(selector) {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.05 });
+
+  document.querySelectorAll(selector).forEach(el => observer.observe(el));
+}
+
+// ── Heatmap ───────────────────────────────────────────
+function buildHeatmap() {
+  const grid   = document.getElementById('heatmapGrid');
+  const months = document.getElementById('heatmapMonths');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  months.innerHTML = '';
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  // Build activity count per day
+  const activityMap = {};
+  DEMO_ENTRIES.forEach(e => {
+    const d = new Date(e.createdAt);
+    d.setHours(0,0,0,0);
+    const key = d.toDateString();
+    activityMap[key] = (activityMap[key]||0)+1;
+  });
+
+  // 52 weeks back
+  const weeks = 52;
+  const startDay = new Date(today);
+  startDay.setDate(startDay.getDate() - (weeks * 7) + 1);
+
+  let monthLabels = [];
+  let cellIdx = 0;
+
+  for (let w = 0; w < weeks; w++) {
+    const weekEl = document.createElement('div');
+    weekEl.className = 'heatmap-week';
+
+    for (let d = 0; d < 7; d++) {
+      const day = new Date(startDay);
+      day.setDate(startDay.getDate() + w * 7 + d);
+
+      const count = activityMap[day.toDateString()] || 0;
+      const level = count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count <= 5 ? 3 : 4;
+
+      const cell = document.createElement('div');
+      cell.className = `heatmap-cell hm-${level}`;
+      cell.title = `${day.toLocaleDateString('en-US',{month:'short', day:'numeric'})}: ${count} entries`;
+      weekEl.appendChild(cell);
+
+      // Tooltip
+      cell.addEventListener('mouseenter', (e) => showTooltip(e, cell.title));
+      cell.addEventListener('mouseleave', () => hideTooltip());
+
+      cellIdx++;
+    }
+
+    // Month label for first week of month
+    const weekStart = new Date(startDay);
+    weekStart.setDate(startDay.getDate() + w * 7);
+    const prevWeekStart = new Date(startDay);
+    prevWeekStart.setDate(startDay.getDate() + (w-1) * 7);
+
+    if (w === 0 || weekStart.getMonth() !== prevWeekStart.getMonth()) {
+      const span = document.createElement('span');
+      span.className = 'heatmap-month-label';
+      span.style.minWidth = '13px';
+      span.textContent = weekStart.toLocaleDateString('en-US',{month:'short'});
+      months.appendChild(span);
+    } else {
+      const span = document.createElement('span');
+      span.className = 'heatmap-month-label';
+      span.style.minWidth = '13px';
+      span.textContent = '';
+      months.appendChild(span);
+    }
+
+    grid.appendChild(weekEl);
+  }
+
+  // Scroll heatmap to the right (most recent)
+  setTimeout(() => { grid.scrollLeft = grid.scrollWidth; months.scrollLeft = months.scrollWidth; }, 50);
+}
+
+// ── Tooltip ───────────────────────────────────────────
+const tooltip = document.getElementById('tlTooltip');
+function showTooltip(e, text) {
+  tooltip.textContent = text;
+  tooltip.classList.add('show');
+  moveTooltip(e);
+}
+function moveTooltip(e) {
+  tooltip.style.left = (e.clientX + 12) + 'px';
+  tooltip.style.top  = (e.clientY - 32) + 'px';
+}
+function hideTooltip() { tooltip.classList.remove('show'); }
+document.addEventListener('mousemove', e => { if (tooltip.classList.contains('show')) moveTooltip(e); });
+
+// ── Entry count stat ──────────────────────────────────
+function updateCount(entries) {
+  document.getElementById('entryCountNum').textContent = entries.length;
+}
+
+// ── Main render ───────────────────────────────────────
+function renderAll() {
+  const entries = filteredEntries();
+  updateCount(entries);
+  showInsight(insightIdx);
+
+  if (currentView === 'chronological') {
+    renderChronological(entries);
+  } else {
+    renderCluster(entries);
+  }
+}
+
+// ── Init ──────────────────────────────────────────────
+buildHeatmap();
+renderAll();
+
+// Fetch real data when backend is live
+async function loadFromBackend() {
+  if (!token) return;
+  try {
+    const res  = await fetch('http://localhost:4000/api/timeline', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (data.entries && data.entries.length) {
+      DEMO_ENTRIES.length = 0;
+      DEMO_ENTRIES.push(...data.entries);
+      buildHeatmap();
+      renderAll();
+    }
+  } catch (err) {
+    console.log('Running in demo mode (backend not connected)');
+  }
+}
+loadFromBackend();
+</script>
+</body>
+</html>

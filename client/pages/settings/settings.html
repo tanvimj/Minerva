@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minerva — Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-base"></div>
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modalTitle">Confirm Action</h3>
+      <button class="modal-close" id="modalClose">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <p class="modal-body" id="modalBody"></p>
+    <div id="modalConfirmWrap" style="display:none">
+      <label class="form-label" id="modalConfirmLabel">Type your username to confirm</label>
+      <input type="text" class="form-input" id="modalConfirmInput" placeholder="username" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="modalCancel">Cancel</button>
+      <button class="btn-danger" id="modalConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- App Shell -->
+<div class="app-shell" id="appShell">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-mark">
+        <div class="bm-ring r1"></div>
+        <div class="bm-ring r2"></div>
+        <div class="bm-dot"></div>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Minerva</span>
+        <span class="brand-tag">Digital Brain</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <a href="../dashboard/dashboard.html" class="nav-item" data-label="Dashboard">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+        </span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a href="../notes/notes.html" class="nav-item" data-label="Notes">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 4h12v10H4V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><line x1="7" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1"/><line x1="7" y1="11" x2="11" y2="11" stroke="currentColor" stroke-width="1"/></svg>
+        </span>
+        <span class="nav-label">Notes</span>
+      </a>
+      <a href="../goals/goals.html" class="nav-item" data-label="Goals">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="10" r="3.5" stroke="currentColor" stroke-width="1"/><circle cx="10" cy="10" r="1" fill="currentColor"/></svg>
+        </span>
+        <span class="nav-label">Goals</span>
+      </a>
+      <a href="../analytics/analytics.html" class="nav-item" data-label="Analytics">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><polyline points="3,15 7,9 11,12 15,5 17,7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="nav-label">Analytics</span>
+      </a>
+      <a href="../graph/graph.html" class="nav-item" data-label="Graph">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="4" cy="5" r="1.5" stroke="currentColor" stroke-width="1"/><circle cx="16" cy="5" r="1.5" stroke="currentColor" stroke-width="1"/><circle cx="4" cy="15" r="1.5" stroke="currentColor" stroke-width="1"/><circle cx="16" cy="15" r="1.5" stroke="currentColor" stroke-width="1"/><line x1="5.5" y1="6" x2="8.5" y2="8.5" stroke="currentColor" stroke-width="1"/><line x1="14.5" y1="6" x2="11.5" y2="8.5" stroke="currentColor" stroke-width="1"/><line x1="5.5" y1="14" x2="8.5" y2="11.5" stroke="currentColor" stroke-width="1"/><line x1="14.5" y1="14" x2="11.5" y2="11.5" stroke="currentColor" stroke-width="1"/></svg>
+        </span>
+        <span class="nav-label">Graph</span>
+      </a>
+      <a href="timeline.html" class="nav-item" data-label="Timeline">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><line x1="10" y1="2" x2="10" y2="18" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="5" r="2" stroke="currentColor" stroke-width="1"/><circle cx="10" cy="10" r="2" fill="currentColor" opacity=".4"/><circle cx="10" cy="15" r="2" stroke="currentColor" stroke-width="1"/><line x1="10" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1"/><line x1="10" y1="10" x2="5" y2="10" stroke="currentColor" stroke-width="1"/><line x1="10" y1="15" x2="15" y2="15" stroke="currentColor" stroke-width="1"/></svg>
+        </span>
+        <span class="nav-label">Timeline</span>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <a href="../settings/settings.html" class="nav-item active" data-label="Settings">
+        <span class="nav-icon">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </span>
+        <span class="nav-label">Settings</span>
+      </a>
+    </nav>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main-wrap">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Settings</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="search-pill">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4" stroke="currentColor" stroke-width="1.2"/><line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <input type="text" class="search-input" id="settingsSearch" placeholder="Search settings…" />
+        </div>
+        <button class="icon-btn" title="Notifications">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 016 6c0 3 1 4 2 5H2c1-1 2-2 2-5a6 6 0 016-6z" stroke="currentColor" stroke-width="1.3"/><path d="M8.5 17a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3"/></svg>
+        </button>
+        <button class="avatar-btn" id="avatarBtn" title="Account">
+          <span class="avatar-initials" id="avatarInitials">TM</span>
+        </button>
+        <div class="avatar-menu" id="avatarMenu">
+          <div class="avatar-menu-user" id="avatarMenuName">Thomas Minerva</div>
+          <div class="avatar-menu-email" id="avatarMenuEmail">thomas@minerva.app</div>
+          <div class="avatar-menu-divider"></div>
+          <button class="avatar-menu-item" id="logoutBtn">Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══ SETTINGS LAYOUT ══ -->
+    <div class="settings-layout">
+
+      <!-- ── Settings Sidebar Nav ── -->
+      <nav class="settings-nav" id="settingsNav">
+
+        <div class="sn-group">
+          <div class="sn-group-label">Account</div>
+          <button class="sn-item active" data-section="profile">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M3 15c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </span>
+            Profile
+          </button>
+          <button class="sn-item" data-section="account">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="5" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 5V4a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.2"/></svg>
+            </span>
+            Account
+          </button>
+          <button class="sn-item" data-section="security">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><path d="M9 2L3 5v5c0 3.55 2.5 6.87 6 7.72C12.5 16.87 15 13.55 15 10V5L9 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            </span>
+            Security
+          </button>
+        </div>
+
+        <div class="sn-group">
+          <div class="sn-group-label">Personalise</div>
+          <button class="sn-item" data-section="appearance">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M9 2.5v13M2.5 9h13" stroke="currentColor" stroke-width="1" opacity=".5"/></svg>
+            </span>
+            Appearance
+          </button>
+          <button class="sn-item" data-section="notes">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><path d="M3 3h12v11H3V3z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="6" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="1"/><line x1="6" y1="10" x2="10" y2="10" stroke="currentColor" stroke-width="1"/></svg>
+            </span>
+            Notes
+          </button>
+          <button class="sn-item" data-section="graph">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2" stroke="currentColor" stroke-width="1.1"/><circle cx="3" cy="4" r="1.3" stroke="currentColor" stroke-width="1"/><circle cx="15" cy="4" r="1.3" stroke="currentColor" stroke-width="1"/><circle cx="3" cy="14" r="1.3" stroke="currentColor" stroke-width="1"/><circle cx="15" cy="14" r="1.3" stroke="currentColor" stroke-width="1"/><line x1="4.3" y1="5" x2="7.5" y2="7.5" stroke="currentColor" stroke-width=".9"/><line x1="13.7" y1="5" x2="10.5" y2="7.5" stroke="currentColor" stroke-width=".9"/><line x1="4.3" y1="13" x2="7.5" y2="10.5" stroke="currentColor" stroke-width=".9"/><line x1="13.7" y1="13" x2="10.5" y2="10.5" stroke="currentColor" stroke-width=".9"/></svg>
+            </span>
+            Graph
+          </button>
+        </div>
+
+        <div class="sn-group">
+          <div class="sn-group-label">System</div>
+          <button class="sn-item" data-section="analytics">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><polyline points="2,14 6,8 10,11 14,4 16,6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            Analytics
+          </button>
+          <button class="sn-item" data-section="notifications">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><path d="M9 1.5a5 5 0 015 5c0 2.75 1 3.75 1.75 4.5H2.25C3 10.25 4 9.25 4 6.5a5 5 0 015-5z" stroke="currentColor" stroke-width="1.2"/><path d="M7.5 15.5a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.2"/></svg>
+            </span>
+            Notifications
+          </button>
+          <button class="sn-item" data-section="data">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="5" rx="6" ry="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 9c0 1.38 2.686 2.5 6 2.5S15 10.38 15 9M3 5v8c0 1.38 2.686 2.5 6 2.5S15 14.38 15 13V5" stroke="currentColor" stroke-width="1.2"/></svg>
+            </span>
+            Data &amp; Export
+          </button>
+          <button class="sn-item sn-danger" data-section="danger">
+            <span class="sn-icon">
+              <svg viewBox="0 0 18 18" fill="none"><path d="M9 2l7 13H2L9 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="9" y1="7" x2="9" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="9" cy="13" r=".65" fill="currentColor"/></svg>
+            </span>
+            Danger Zone
+          </button>
+        </div>
+
+      </nav>
+
+      <!-- ── Settings Content ── -->
+      <div class="settings-content" id="settingsContent">
+
+        <!-- ════ PROFILE ════ -->
+        <section class="settings-section active" id="section-profile">
+          <div class="section-header">
+            <div class="section-eyebrow">Account</div>
+            <h2 class="section-title">Profile</h2>
+            <p class="section-sub">How Minerva identifies you across the system.</p>
+          </div>
+
+          <!-- Avatar card -->
+          <div class="settings-card">
+            <div class="card-label">Your Avatar</div>
+            <div class="profile-avatar-row">
+              <div class="profile-avatar-wrap">
+                <div class="profile-avatar" id="profileAvatar">TM</div>
+                <button class="avatar-upload-btn" id="avatarUploadBtn" title="Upload photo">
+                  <svg viewBox="0 0 14 14" fill="none"><path d="M7 2v8M3 6l4-4 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="12" x2="12" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </button>
+                <input type="file" id="avatarInput" accept="image/*" style="display:none" />
+              </div>
+              <div class="profile-avatar-info">
+                <div class="profile-avatar-name" id="profileAvatarName">Thomas Minerva</div>
+                <div class="profile-avatar-meta">JPG or PNG · max 2 MB</div>
+                <div class="last-active-badge">
+                  <span class="la-dot"></span> Last active <span id="lastActive">just now</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fields card -->
+          <div class="settings-card">
+            <div class="card-label">Personal Info</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Display Name</label>
+                <input type="text" class="form-input" id="displayName" value="Thomas Minerva" placeholder="Your full name" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Username</label>
+                <div class="input-affix-wrap">
+                  <span class="input-prefix">@</span>
+                  <input type="text" class="form-input has-prefix" id="username" value="tminerva" placeholder="handle" />
+                </div>
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Bio</label>
+                <textarea class="form-textarea" id="bio" rows="3" placeholder="A short note about your goals or thinking style…">Building Minerva — a second brain for ideas, research, and growth.</textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Timezone</label>
+                <select class="form-select" id="timezone">
+                  <option value="UTC">UTC</option>
+                  <option value="Asia/Kolkata" selected>Asia/Kolkata (IST +5:30)</option>
+                  <option value="America/New_York">America/New_York (EST)</option>
+                  <option value="America/Los_Angeles">America/Los_Angeles (PST)</option>
+                  <option value="Europe/London">Europe/London (GMT)</option>
+                  <option value="Europe/Berlin">Europe/Berlin (CET)</option>
+                  <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Language</label>
+                <select class="form-select" id="language">
+                  <option value="en" selected>English</option>
+                  <option value="hi">Hindi</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                  <option value="de">German</option>
+                  <option value="ja">Japanese</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-actions">
+            <button class="btn-save" onclick="saveSection('profile')">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Save Profile
+            </button>
+          </div>
+        </section>
+
+        <!-- ════ ACCOUNT ════ -->
+        <section class="settings-section" id="section-account">
+          <div class="section-header">
+            <div class="section-eyebrow">Account</div>
+            <h2 class="section-title">Account</h2>
+            <p class="section-sub">Manage login credentials and subscription details.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Login Details</div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label class="form-label">Email Address</label>
+                <div class="input-affix-wrap">
+                  <input type="email" class="form-input has-suffix" id="email" value="thomas@minerva.app" />
+                  <span class="input-suffix verified">✓ verified</span>
+                </div>
+                <span class="form-hint">A verification email will be sent if changed.</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input type="password" class="form-input" placeholder="••••••••••" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input type="password" class="form-input" id="newPassword" placeholder="Min 8 characters" />
+                <div class="password-strength">
+                  <div class="ps-track"><div class="ps-fill" id="psFill"></div></div>
+                  <span class="ps-label" id="psLabel"></span>
+                </div>
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Confirm New Password</label>
+                <input type="password" class="form-input" placeholder="Repeat new password" />
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Subscription</div>
+            <div class="subscription-row">
+              <div class="sub-info">
+                <div class="sub-plan-row">
+                  <span class="sub-badge">Free Plan</span>
+                  <span class="sub-since">Member since March 2024</span>
+                </div>
+                <p class="card-sub">You're on the free tier. Upgrade for unlimited notes, advanced analytics, and graph exports.</p>
+              </div>
+              <button class="btn-upgrade">Upgrade to Pro ✦</button>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Account Data</div>
+            <div class="data-action-row">
+              <div class="data-action-info">
+                <svg viewBox="0 0 20 20" fill="none" width="18"><path d="M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                <div>
+                  <div class="da-title">Download Account Data</div>
+                  <div class="da-sub">Your notes, settings, and activity as JSON</div>
+                </div>
+              </div>
+              <button class="btn-outline" onclick="showToast('Preparing your export…','info')">Download</button>
+            </div>
+          </div>
+
+          <div class="section-actions">
+            <button class="btn-save" onclick="saveSection('account')">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Save Changes
+            </button>
+          </div>
+        </section>
+
+        <!-- ════ APPEARANCE ════ -->
+        <section class="settings-section" id="section-appearance">
+          <div class="section-header">
+            <div class="section-eyebrow">Personalise</div>
+            <h2 class="section-title">Appearance</h2>
+            <p class="section-sub">Control how Minerva looks and feels.</p>
+          </div>
+
+          <div class="appearance-layout">
+            <div class="appearance-controls">
+
+              <div class="settings-card">
+                <div class="card-label">Theme</div>
+                <div class="theme-picker">
+                  <button class="theme-opt active" data-theme="dark" id="thDark">
+                    <div class="theme-thumb dark-thumb">
+                      <div class="tt-bar"></div>
+                      <div class="tt-row"><div class="tt-block"></div><div class="tt-block sm"></div></div>
+                    </div>
+                    <span>Dark</span>
+                    <span class="theme-tick">✓</span>
+                  </button>
+                  <button class="theme-opt" data-theme="light" id="thLight">
+                    <div class="theme-thumb light-thumb">
+                      <div class="tt-bar"></div>
+                      <div class="tt-row"><div class="tt-block"></div><div class="tt-block sm"></div></div>
+                    </div>
+                    <span>Light</span>
+                    <span class="theme-tick"></span>
+                  </button>
+                  <button class="theme-opt" data-theme="system" id="thSystem">
+                    <div class="theme-thumb system-thumb">
+                      <div class="tt-bar"></div>
+                      <div class="tt-row"><div class="tt-block"></div><div class="tt-block sm"></div></div>
+                    </div>
+                    <span>System</span>
+                    <span class="theme-tick"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="card-label">Accent Colour</div>
+                <div class="accent-row">
+                  <button class="accent-swatch active" data-color="#a78bfa" style="background:#a78bfa" title="Violet"></button>
+                  <button class="accent-swatch" data-color="#60a5fa" style="background:#60a5fa" title="Blue"></button>
+                  <button class="accent-swatch" data-color="#34d399" style="background:#34d399" title="Emerald"></button>
+                  <button class="accent-swatch" data-color="#f472b6" style="background:#f472b6" title="Pink"></button>
+                  <button class="accent-swatch" data-color="#fb923c" style="background:#fb923c" title="Orange"></button>
+                  <button class="accent-swatch" data-color="#facc15" style="background:#facc15" title="Amber"></button>
+                  <label class="accent-custom-wrap" title="Custom colour">
+                    <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v6M4 7h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                    <input type="color" id="accentCustom" value="#a78bfa" />
+                  </label>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="card-label">Typography</div>
+                <div class="form-group" style="margin-bottom:.85rem">
+                  <label class="form-label">Font Size</label>
+                  <div class="seg-control" id="fontSizeSeg">
+                    <button class="seg-btn" data-val="small">Small</button>
+                    <button class="seg-btn active" data-val="medium">Medium</button>
+                    <button class="seg-btn" data-val="large">Large</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Font Style</label>
+                  <div class="seg-control" id="fontStyleSeg">
+                    <button class="seg-btn font-serif" data-val="serif">Serif</button>
+                    <button class="seg-btn active" data-val="sans">Sans</button>
+                    <button class="seg-btn font-mono" data-val="mono">Mono</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="card-label">Accessibility</div>
+                <div class="toggle-row">
+                  <div class="toggle-info">
+                    <div class="toggle-title">Reduced Motion</div>
+                    <div class="toggle-sub">Minimise animations and transitions</div>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="reducedMotion" />
+                    <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                  </label>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Live Preview -->
+            <div class="appearance-preview-wrap">
+              <div class="preview-label">Live Preview</div>
+              <div class="preview-card" id="previewCard">
+                <div class="prev-topbar">
+                  <div class="prev-dot" id="prevDot"></div>
+                  <div class="prev-topbar-title">Minerva</div>
+                </div>
+                <div class="prev-body">
+                  <div class="prev-tag" id="prevTag">Idea</div>
+                  <div class="prev-title" id="prevTitle">Graph-based knowledge retrieval</div>
+                  <div class="prev-text">Using bidirectional links to surface related concepts automatically…</div>
+                  <div class="prev-progress-wrap">
+                    <div class="prev-progress-label">Daily goal</div>
+                    <div class="prev-track">
+                      <div class="prev-fill" id="prevFill"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-actions">
+            <button class="btn-save" onclick="saveSection('appearance')">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Save Appearance
+            </button>
+          </div>
+        </section>
+
+        <!-- ════ NOTES ════ -->
+        <section class="settings-section" id="section-notes">
+          <div class="section-header">
+            <div class="section-eyebrow">Personalise</div>
+            <h2 class="section-title">Notes Preferences</h2>
+            <p class="section-sub">Customise how notes are created, displayed, and organised.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Display</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Default View</label>
+                <div class="seg-control">
+                  <button class="seg-btn active" data-val="grid">Grid</button>
+                  <button class="seg-btn" data-val="list">List</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Default Sort</label>
+                <select class="form-select">
+                  <option value="date" selected>Date created</option>
+                  <option value="title">Title A–Z</option>
+                  <option value="links">Most linked</option>
+                  <option value="updated">Last updated</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Auto-save Interval</label>
+                <select class="form-select">
+                  <option value="5">Every 5 seconds</option>
+                  <option value="15" selected>Every 15 seconds</option>
+                  <option value="30">Every 30 seconds</option>
+                  <option value="60">Every minute</option>
+                  <option value="0">Manual only</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Features</div>
+            <div class="toggle-stack">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Show Word Count</div>
+                  <div class="toggle-sub">Display word and character count in the editor toolbar</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Enable Backlinks Panel</div>
+                  <div class="toggle-sub">Show linked references at the bottom of every note</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Version History Tracking</div>
+                  <div class="toggle-sub">Store snapshots of every major edit</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Auto-tag Suggestions</div>
+                  <div class="toggle-sub">Suggest relevant tags based on note content using AI</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Default Template</div>
+            <textarea class="form-textarea monospace" rows="7" spellcheck="false"># {{title}}
+
+**Date:** {{date}}
+
+## Summary
+
+## Key Ideas
+
+## Links</textarea>
+            <span class="form-hint">Use <code>{{title}}</code>, <code>{{date}}</code>, <code>{{tags}}</code> as placeholders.</span>
+          </div>
+
+          <div class="section-actions">
+            <button class="btn-save" onclick="saveSection('notes')">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Save Notes Preferences
+            </button>
+          </div>
+        </section>
+
+        <!-- ════ GRAPH ════ -->
+        <section class="settings-section" id="section-graph">
+          <div class="section-header">
+            <div class="section-eyebrow">Personalise</div>
+            <h2 class="section-title">Graph Settings</h2>
+            <p class="section-sub">Configure your knowledge graph's behaviour and visual style.</p>
+          </div>
+
+          <div class="graph-settings-layout">
+            <div class="graph-controls">
+
+              <div class="settings-card">
+                <div class="card-label">Node Size Mode</div>
+                <div class="seg-control">
+                  <button class="seg-btn active" data-val="links">By links</button>
+                  <button class="seg-btn" data-val="words">By words</button>
+                  <button class="seg-btn" data-val="uniform">Uniform</button>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="card-label">Graph Theme</div>
+                <div class="seg-control">
+                  <button class="seg-btn active" data-val="neural">Neural</button>
+                  <button class="seg-btn" data-val="minimal">Minimal</button>
+                  <button class="seg-btn" data-val="cluster">Cluster</button>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="card-label">Edge Thickness</div>
+                <div class="slider-row">
+                  <span class="slider-end-label">Thin</span>
+                  <input type="range" class="range-slider" min="1" max="5" value="2" id="edgeThickness" />
+                  <span class="slider-end-label">Thick</span>
+                  <span class="slider-val" id="edgeThicknessVal">2</span>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="card-label">Behaviour</div>
+                <div class="toggle-stack">
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">Physics Animation</div>
+                      <div class="toggle-sub">Nodes repel and attract dynamically</div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked />
+                      <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                    </label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">Highlight Central Nodes</div>
+                      <div class="toggle-sub">Emphasise nodes with 5+ connections</div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked />
+                      <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                    </label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">Cluster by Tag</div>
+                      <div class="toggle-sub">Group nodes by their primary tag</div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" />
+                      <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                    </label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">Show Weak Connections</div>
+                      <div class="toggle-sub">Dashed edges for single-mention links</div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" />
+                      <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Graph Preview Canvas -->
+            <div class="graph-preview-panel">
+              <div class="preview-label">Mini Graph Preview</div>
+              <canvas id="miniGraphCanvas" width="240" height="240"></canvas>
+              <div class="graph-legend">
+                <span class="gl-item"><span class="gl-dot accent"></span> Hub</span>
+                <span class="gl-item"><span class="gl-dot green"></span> Leaf</span>
+                <span class="gl-item"><span class="gl-dot yellow"></span> Isolated</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-actions">
+            <button class="btn-save" onclick="saveSection('graph')">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Save Graph Settings
+            </button>
+          </div>
+        </section>
+
+        <!-- ════ ANALYTICS ════ -->
+        <section class="settings-section" id="section-analytics">
+          <div class="section-header">
+            <div class="section-eyebrow">System</div>
+            <h2 class="section-title">Analytics Settings</h2>
+            <p class="section-sub">Control what Minerva tracks and how insights are generated.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Tracking</div>
+            <div class="toggle-stack">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Track Writing Time</div>
+                  <div class="toggle-sub">Measure active time spent writing each note</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Track Edit Frequency</div>
+                  <div class="toggle-sub">Record how often notes are revisited</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Productivity Streak Tracking</div>
+                  <div class="toggle-sub">Maintain daily writing streak counters</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Weekly Reports</div>
+                  <div class="toggle-sub">Show a digest summary every Monday</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Insight Sensitivity</div>
+            <p class="card-sub">How deeply Minerva analyses your patterns to surface insights.</p>
+            <div class="seg-control" id="insightSeg">
+              <button class="seg-btn" data-val="basic">Basic</button>
+              <button class="seg-btn active" data-val="standard">Standard</button>
+              <button class="seg-btn" data-val="advanced">Advanced</button>
+            </div>
+            <div class="insight-desc" id="insightDesc">Standard mode surfaces weekly trends, topic clusters, and productivity patterns.</div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Reset</div>
+            <p class="card-sub">Permanently deletes all analytics history. Notes and goals are unaffected.</p>
+            <button class="btn-outline danger" onclick="openModal('Reset Analytics Data','All analytics history will be permanently deleted. This cannot be undone.',false,()=>showToast('Analytics data has been reset.','success'))">
+              Reset Analytics History
+            </button>
+          </div>
+
+          <div class="section-actions">
+            <button class="btn-save" onclick="saveSection('analytics')">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Save Analytics Settings
+            </button>
+          </div>
+        </section>
+
+        <!-- ════ NOTIFICATIONS ════ -->
+        <section class="settings-section" id="section-notifications">
+          <div class="section-header">
+            <div class="section-eyebrow">System</div>
+            <h2 class="section-title">Notifications</h2>
+            <p class="section-sub">Choose when and how Minerva reaches out to you.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">In-App Notifications</div>
+            <div class="toggle-stack">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Revisit Suggestions</div>
+                  <div class="toggle-sub">Remind you of notes not opened in 30+ days</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">In-App Reminders</div>
+                  <div class="toggle-sub">Goal deadlines and milestone completions</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Streak Reminders</div>
+                  <div class="toggle-sub">Alert when your streak is at risk</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Email</div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Weekly Summary Email</div>
+                <div class="toggle-sub">Digest of notes, goals, and insights every Monday 9 AM</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked />
+                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Quiet Hours</div>
+            <p class="card-sub">Suppress all notifications during these hours.</p>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">From</label>
+                <input type="time" class="form-input" value="22:00" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">To</label>
+                <input type="time" class="form-input" value="07:00" />
+              </div>
+            </div>
+          </div>
+
+          <div class="section-actions">
+            <button class="btn-save" onclick="saveSection('notifications')">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Save Notifications
+            </button>
+          </div>
+        </section>
+
+        <!-- ════ DATA & EXPORT ════ -->
+        <section class="settings-section" id="section-data">
+          <div class="section-header">
+            <div class="section-eyebrow">System</div>
+            <h2 class="section-title">Data &amp; Export</h2>
+            <p class="section-sub">Your data belongs to you. Export, import, or manage it freely.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Storage Usage</div>
+            <div class="storage-meter-wrap">
+              <div class="storage-bar-track">
+                <div class="storage-bar-fill" style="width:34%"></div>
+              </div>
+              <div class="storage-labels">
+                <span class="sl-used">34 MB used</span>
+                <span class="sl-total">of 100 MB (free tier)</span>
+              </div>
+            </div>
+            <div class="storage-breakdown">
+              <div class="sb-row"><span class="sb-dot" style="background:var(--accent)"></span> Notes <span class="sb-val">21 MB</span></div>
+              <div class="sb-row"><span class="sb-dot" style="background:var(--green)"></span> Media <span class="sb-val">10 MB</span></div>
+              <div class="sb-row"><span class="sb-dot" style="background:var(--yellow)"></span> Backups <span class="sb-val">3 MB</span></div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Export Notes</div>
+            <p class="card-sub">Download all your notes in your preferred format.</p>
+            <div class="export-btn-row">
+              <button class="btn-export" onclick="showToast('Exporting as JSON…','info')">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                JSON
+              </button>
+              <button class="btn-export" onclick="showToast('Exporting as Markdown…','info')">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                Markdown
+              </button>
+              <button class="btn-export" onclick="showToast('Generating PDF…','info')">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                PDF
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Import</div>
+            <div class="import-drop-zone" id="importZone">
+              <svg viewBox="0 0 40 40" fill="none" width="34">
+                <path d="M20 28V12M12 20l8-8 8 8" stroke="rgba(167,139,250,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="4" y="28" width="32" height="8" rx="3" stroke="rgba(167,139,250,0.25)" stroke-width="1.2"/>
+              </svg>
+              <div class="import-drop-text">Drop a JSON or Markdown file here</div>
+              <div class="import-drop-sub">or <button class="import-browse-btn" onclick="document.getElementById('importFile').click()">browse</button> your device</div>
+              <input type="file" id="importFile" accept=".json,.md" style="display:none" />
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Backup</div>
+            <div class="form-group" style="margin-bottom:.85rem">
+              <label class="form-label">Auto-backup Frequency</label>
+              <select class="form-select">
+                <option value="daily" selected>Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="manual">Manual only</option>
+              </select>
+            </div>
+            <div class="backup-action-row">
+              <button class="btn-outline" onclick="showToast('Creating backup…','info')">Create Manual Backup</button>
+              <button class="btn-outline danger" onclick="showToast('Scanning for unused files…','info')">Delete Unused Media</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ════ SECURITY ════ -->
+        <section class="settings-section" id="section-security">
+          <div class="section-header">
+            <div class="section-eyebrow">Account</div>
+            <h2 class="section-title">Security</h2>
+            <p class="section-sub">Protect your account and control access.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Two-Factor Authentication</div>
+            <div class="tfa-row">
+              <div>
+                <div class="tfa-status off">Not enabled</div>
+                <p class="card-sub">Add a second layer of protection with an authenticator app.</p>
+              </div>
+              <button class="btn-outline" onclick="showToast('2FA setup coming soon.','info')">Enable 2FA</button>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Active Sessions</div>
+            <div class="sessions-list">
+              <div class="session-item">
+                <div class="session-icon">
+                  <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="17" x2="13" y2="17" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="9" y1="14" x2="9" y2="17" stroke="currentColor" stroke-width="1.2"/></svg>
+                </div>
+                <div class="session-info">
+                  <div class="session-name">Chrome · Windows 11 <span class="session-current">current</span></div>
+                  <div class="session-meta">Sholapur, Maharashtra · Active now</div>
+                </div>
+              </div>
+              <div class="session-item">
+                <div class="session-icon">
+                  <svg viewBox="0 0 18 18" fill="none"><rect x="4" y="1" width="10" height="16" rx="2" stroke="currentColor" stroke-width="1.2"/><circle cx="9" cy="14" r=".8" fill="currentColor" opacity=".5"/></svg>
+                </div>
+                <div class="session-info">
+                  <div class="session-name">Safari · iPhone 15</div>
+                  <div class="session-meta">Mumbai · 2 days ago</div>
+                </div>
+                <button class="session-revoke" onclick="showToast('Session revoked.','success')">Revoke</button>
+              </div>
+            </div>
+            <button class="btn-outline danger" style="margin-top:.9rem" onclick="openModal('Log Out All Devices','You will be signed out from all sessions including this one.',false,()=>showToast('Logged out from all devices.','success'))">
+              Logout from All Devices
+            </button>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Account Activity</div>
+            <div class="activity-log">
+              <div class="al-item">
+                <span class="al-dot success"></span>
+                <div class="al-content">
+                  <div class="al-action">Login successful</div>
+                  <div class="al-meta">Today, 9:14 AM · 103.x.x.x · Sholapur</div>
+                </div>
+              </div>
+              <div class="al-item">
+                <span class="al-dot success"></span>
+                <div class="al-content">
+                  <div class="al-action">Password changed</div>
+                  <div class="al-meta">2 days ago · 103.x.x.x</div>
+                </div>
+              </div>
+              <div class="al-item">
+                <span class="al-dot warn"></span>
+                <div class="al-content">
+                  <div class="al-action">Failed login attempt</div>
+                  <div class="al-meta">4 days ago · 185.x.x.x · Unknown location</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-label">Privacy</div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Privacy Mode</div>
+                <div class="toggle-sub">Disable all analytics tracking and insights generation</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" />
+                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- ════ DANGER ZONE ════ -->
+        <section class="settings-section" id="section-danger">
+          <div class="section-header">
+            <div class="section-eyebrow danger-eye">Irreversible Actions</div>
+            <h2 class="section-title danger-title">Danger Zone</h2>
+            <p class="section-sub">These actions are permanent and cannot be undone. Proceed with extreme care.</p>
+          </div>
+
+          <div class="danger-zone">
+
+            <div class="danger-card">
+              <div class="danger-card-text">
+                <div class="danger-card-title">Delete All Notes</div>
+                <div class="danger-card-sub">Permanently removes every note, tag, and backlink. Goals and analytics are unaffected.</div>
+              </div>
+              <button class="btn-danger-outline" onclick="openModal('Delete All Notes','Every note will be permanently deleted. This cannot be undone.',false,()=>showToast('All notes deleted.','error'))">
+                Delete All Notes
+              </button>
+            </div>
+
+            <div class="danger-card">
+              <div class="danger-card-text">
+                <div class="danger-card-title">Reset Analytics Data</div>
+                <div class="danger-card-sub">Clears all writing history, streaks, focus scores, and insights. Notes remain intact.</div>
+              </div>
+              <button class="btn-danger-outline" onclick="openModal('Reset Analytics','All analytics history will be permanently cleared.',false,()=>showToast('Analytics reset.','error'))">
+                Reset Analytics
+              </button>
+            </div>
+
+            <div class="danger-card ultimate">
+              <div class="danger-card-text">
+                <div class="danger-card-title">Delete Account</div>
+                <div class="danger-card-sub">Permanently deletes your Minerva account, all notes, goals, analytics, and settings. This is completely irreversible.</div>
+              </div>
+              <button class="btn-danger" onclick="openModal('Delete Your Account','All your data will be permanently deleted. Type your username below to confirm.',true,()=>showToast('Account deletion initiated.','error'))">
+                Delete Account
+              </button>
+            </div>
+
+          </div>
+        </section>
+
+      </div><!-- /settings-content -->
+    </div><!-- /settings-layout -->
+  </div><!-- /main-wrap -->
+</div><!-- /app-shell -->
+
+<script src="settings.js"></script>
+</body>
+</html>

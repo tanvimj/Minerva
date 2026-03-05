@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minerva — Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+/* =====================================================
+   MINERVA — analytics.css
+   ===================================================== */
+:root {
+  --bg:          #07070e;
+  --surface:     rgba(255,255,255,0.038);
+  --surface-hi:  rgba(255,255,255,0.06);
+  --brd:         rgba(255,255,255,0.07);
+  --brd-hi:      rgba(167,139,250,0.22);
+  --accent:      #a78bfa;
+  --accent-glow: rgba(167,139,250,0.2);
+  --accent-dim:  rgba(167,139,250,0.1);
+  --hi:          rgba(255,255,255,0.92);
+  --mid:         rgba(255,255,255,0.52);
+  --lo:          rgba(255,255,255,0.26);
+  --very-lo:     rgba(255,255,255,0.08);
+  --green:       rgba(110,231,183,0.9);
+  --green-dim:   rgba(110,231,183,0.12);
+  --yellow:      rgba(251,191,36,0.9);
+  --yellow-dim:  rgba(251,191,36,0.12);
+  --red:         rgba(248,113,113,0.9);
+  --red-dim:     rgba(248,113,113,0.1);
+  --orange:      rgba(251,146,60,0.9);
+  --orange-dim:  rgba(251,146,60,0.1);
+  --serif:       'Cormorant Garamond', Georgia, serif;
+  --sans:        'DM Sans', system-ui, sans-serif;
+  --ease:        cubic-bezier(0.4,0,0.2,1);
+  --sidebar-w:   220px;
+  --sidebar-w-c: 64px;
+  --topbar-h:    60px;
+  --r:           14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  background: var(--bg);
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 14px;
+  color: var(--mid);
+  height: 100%;
+  overflow: hidden;
+}
+a    { color: inherit; text-decoration: none; }
+button { font-family: var(--sans); cursor: pointer; border: none; background: none; }
+textarea, input { font-family: var(--sans); }
+
+.bg-base {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 0%   0%,   rgba(55,20,150,0.28)  0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 100%,  rgba(15,8,60,0.24)    0%, transparent 55%),
+    radial-gradient(ellipse 35% 30% at 80%  10%,   rgba(30,12,80,0.14)   0%, transparent 50%),
+    #07070e;
+}
+.bg-orb { display: none; }
+
+.app-shell {
+  position: relative; z-index: 1;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* SIDEBAR */
+.sidebar {
+  flex-shrink: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(10,8,22,0.72);
+  border-right: 1px solid var(--brd);
+  transition: width 0.32s var(--ease);
+  overflow: hidden;
+  position: relative;
+  z-index: 50;
+}
+.sidebar.collapsed { width: var(--sidebar-w-c); }
+.sidebar-brand {
+  display: flex; align-items: center; gap: .75rem;
+  padding: 1.25rem 1rem 1rem;
+  min-height: 68px; flex-shrink: 0; overflow: hidden;
+}
+.brand-mark { position: relative; width: 28px; height: 28px; flex-shrink: 0; }
+@keyframes slowSpin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+.bm-ring {
+  position: absolute; border-radius: 50%;
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  border: 1px solid rgba(167,139,250,0.3);
+  animation: slowSpin linear infinite;
+  will-change: transform;
+}
+.r1 { width: 28px; height: 28px; animation-duration: 40s; }
+.r2 { width: 18px; height: 18px; animation-duration: 24s; animation-direction: reverse; border-color: rgba(167,139,250,0.55); }
+.bm-dot {
+  position: absolute; width: 4px; height: 4px;
+  border-radius: 50%; background: var(--accent);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+.brand-name { font-family: var(--serif); font-size: 1.15rem; font-weight: 400; color: var(--hi); letter-spacing: .05em; line-height: 1; }
+.brand-tag  { font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); opacity: .6; margin-top: .15rem; }
+.sidebar.collapsed .brand-text { opacity: 0; pointer-events: none; }
+.sidebar-nav { flex: 1; display: flex; flex-direction: column; padding: .5rem .6rem; gap: .15rem; overflow-y: auto; overflow-x: hidden; }
+.sidebar-nav::-webkit-scrollbar { width: 3px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--very-lo); border-radius: 3px; }
+.nav-divider { height: 1px; background: var(--brd); margin: .5rem .4rem; }
+.nav-item {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .6rem .65rem; border-radius: 10px;
+  color: var(--lo); white-space: nowrap;
+  transition: background .18s, color .18s, padding .32s var(--ease);
+  position: relative; overflow: hidden;
+}
+.nav-item:hover { background: var(--surface); color: var(--mid); }
+.nav-item.active { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(167,139,250,0.15); }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 2px; border-radius: 2px; background: var(--accent); }
+.nav-icon { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.nav-icon svg { width: 100%; height: 100%; }
+.nav-label { font-size: .82rem; font-weight: 400; }
+.sidebar.collapsed .nav-label { opacity: 0; pointer-events: none; }
+.sidebar.collapsed .nav-item  { padding: .6rem; justify-content: center; }
+.sidebar.collapsed .nav-item::after {
+  content: attr(data-label); position: absolute; left: calc(var(--sidebar-w-c) + 8px);
+  background: rgba(15,12,30,0.92); color: var(--hi); font-size: .75rem;
+  padding: .3rem .65rem; border-radius: 7px; border: 1px solid var(--brd);
+  white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 100;
+}
+.sidebar.collapsed .nav-item:hover::after { opacity: 1; }
+.sidebar-toggle {
+  display: flex; align-items: center; justify-content: center;
+  margin: .75rem .6rem 1rem; padding: .55rem;
+  border-radius: 10px; color: var(--lo);
+  border: 1px solid var(--brd);
+  transition: background .18s, color .18s, transform .32s var(--ease);
+  flex-shrink: 0;
+}
+.sidebar-toggle:hover { background: var(--surface); color: var(--mid); }
+.sidebar-toggle svg { width: 14px; height: 14px; transition: transform .32s var(--ease); }
+.sidebar.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
+
+/* MAIN WRAP */
+.main-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+/* TOPBAR */
+.topbar {
+  height: var(--topbar-h); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.75rem;
+  background: rgba(7,7,14,0.7);
+  border-bottom: 1px solid var(--brd);
+  position: sticky; top: 0; z-index: 40;
+}
+.topbar-left { display: flex; align-items: baseline; gap: 1rem; }
+.page-title { font-family: var(--serif); font-size: 1.4rem; font-weight: 300; color: var(--hi); letter-spacing: .04em; }
+.page-date  { font-size: .72rem; color: var(--lo); letter-spacing: .04em; }
+.topbar-right { display: flex; align-items: center; gap: .75rem; }
+.range-selector {
+  display: flex; gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--brd);
+  border-radius: 8px;
+  padding: 3px;
+}
+.range-btn {
+  font-size: .72rem; font-weight: 500;
+  padding: .28rem .65rem; border-radius: 6px;
+  color: var(--lo); letter-spacing: .04em;
+  transition: background .18s, color .18s;
+}
+.range-btn.active { background: var(--accent); color: #07040f; }
+.range-btn:not(.active):hover { background: var(--surface-hi); color: var(--mid); }
+.search-pill {
+  display: flex; align-items: center; gap: .45rem;
+  background: var(--surface); border: 1px solid var(--brd);
+  border-radius: 40px; padding: .35rem .85rem;
+  transition: border-color .2s, background .2s;
+}
+.search-pill:focus-within { border-color: rgba(167,139,250,.35); background: var(--accent-dim); }
+.search-pill svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--lo); }
+.search-input { background: none; border: none; outline: none; font-size: .8rem; color: var(--hi); width: 140px; }
+.search-input::placeholder { color: var(--lo); }
+.icon-btn {
+  position: relative; width: 34px; height: 34px;
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  color: var(--lo); border: 1px solid var(--brd); background: var(--surface);
+  transition: color .18s, background .18s;
+}
+.icon-btn:hover { color: var(--mid); background: var(--surface-hi); }
+.icon-btn svg { width: 16px; height: 16px; }
+.notif-dot { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); border: 1.5px solid var(--bg); }
+.avatar-btn { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #7c3aed, #a78bfa); display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(167,139,250,0.4); transition: box-shadow .2s; }
+.avatar-btn:hover { box-shadow: 0 0 0 3px rgba(167,139,250,0.18); }
+.avatar-initials { font-size: .65rem; font-weight: 500; color: #fff; letter-spacing: .04em; }
+.avatar-menu {
+  position: absolute; top: calc(var(--topbar-h) - 6px); right: 1.75rem;
+  background: rgba(12,10,24,0.95); border: 1px solid var(--brd);
+  border-radius: 12px; padding: 0.5rem; min-width: 200px;
+  z-index: 200; display: none; box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+.avatar-menu.open { display: block; }
+.avatar-menu-user   { font-size: 0.82rem; color: var(--hi); padding: 0.5rem 0.75rem 0.1rem; font-weight: 400; }
+.avatar-menu-email  { font-size: 0.72rem; color: var(--lo); padding: 0 0.75rem 0.5rem; }
+.avatar-menu-divider{ height: 1px; background: var(--brd); margin: 0.25rem 0; }
+.avatar-menu-item   { width: 100%; text-align: left; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: var(--mid); border-radius: 8px; transition: background .18s, color .18s; }
+.avatar-menu-item:hover { background: var(--surface); color: rgba(248,113,113,0.85); }
+
+/* CONTENT */
+.content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 1.75rem;
+  display: flex; flex-direction: column; gap: 1.6rem;
+}
+.content::-webkit-scrollbar { width: 4px; }
+.content::-webkit-scrollbar-thumb { background: var(--very-lo); border-radius: 4px; }
+
+/* PANELS */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--brd);
+  border-radius: var(--r);
+  padding: 1.3rem 1.5rem;
+  transition: border-color .22s;
+  contain: layout style;
+}
+.panel:hover { border-color: rgba(255,255,255,0.1); }
+.panel-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.2rem; gap: 1rem; }
+.panel-title { font-family: var(--serif); font-size: 1.05rem; font-weight: 400; color: var(--hi); letter-spacing: .03em; }
+.panel-subtitle { font-size: .7rem; color: var(--lo); margin-top: .2rem; }
+.panel-title-group { display: flex; flex-direction: column; }
+.panel-link { font-size: .72rem; color: var(--accent); opacity: .75; transition: opacity .18s; white-space: nowrap; }
+.panel-link:hover { opacity: 1; }
+.panel-badge {
+  font-size: .6rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+  padding: .2rem .55rem; border-radius: 20px;
+  background: var(--green-dim); color: var(--green);
+  white-space: nowrap;
+}
+.panel-badge.badge-purple { background: var(--accent-dim); color: var(--accent); }
+
+/* SECTION INTRO */
+.section-intro {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(124,58,237,0.07) 0%, rgba(167,139,250,0.04) 100%);
+  border: 1px solid rgba(167,139,250,0.1);
+  border-radius: var(--r);
+}
+.section-eyebrow {
+  font-size: .65rem; font-weight: 500; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--accent); opacity: .8;
+  display: block; margin-bottom: .4rem;
+}
+.section-desc { font-size: .82rem; color: var(--mid); max-width: 500px; line-height: 1.55; }
+.brain-pulse {
+  position: relative; width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.pulse-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid var(--accent);
+  animation: pulseExpand 1.8s ease-out forwards;
+  will-change: transform, opacity;
+}
+.pulse-ring.r1 { width: 20px; height: 20px; animation-delay: 0s; }
+.pulse-ring.r2 { width: 36px; height: 36px; animation-delay: .25s; }
+.pulse-ring.r3 { width: 52px; height: 52px; animation-delay: .5s; }
+@keyframes pulseExpand {
+  0%   { opacity: .6; transform: scale(0.5); }
+  100% { opacity: 0;  transform: scale(1);   }
+}
+.pulse-icon { width: 18px; height: 18px; color: var(--accent); position: relative; z-index: 1; }
+
+/* STAT CARDS */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--brd);
+  border-radius: var(--r);
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .22s, box-shadow .22s, transform .2s;
+}
+.stat-card:hover {
+  border-color: var(--brd-hi);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(167,139,250,0.06);
+  transform: translateY(-2px);
+}
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(167,139,250,0.3), transparent);
+  opacity: 0; transition: opacity .3s;
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-icon-wrap { display: flex; align-items: flex-start; justify-content: space-between; }
+.stat-icon {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(167,139,250,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+}
+.stat-icon svg { width: 14px; height: 14px; }
+.stat-icon.icon-green  { background: var(--green-dim);  border-color: rgba(110,231,183,0.2); color: var(--green);  }
+.stat-icon.icon-yellow { background: var(--yellow-dim); border-color: rgba(251,191,36,0.2);  color: var(--yellow); }
+.stat-icon.icon-red    { background: var(--red-dim);    border-color: rgba(248,113,113,0.2); color: var(--red);    }
+.stat-icon.icon-orange { background: var(--orange-dim); border-color: rgba(251,146,60,0.2);  color: var(--orange); }
+.stat-label { font-size: .65rem; color: var(--lo); letter-spacing: .06em; text-transform: uppercase; }
+.stat-value {
+  font-family: var(--serif);
+  font-size: 1.75rem; font-weight: 300;
+  color: var(--hi); line-height: 1;
+}
+.stat-value.tag-value { font-family: var(--sans); font-size: 1.1rem; font-weight: 400; color: var(--accent); }
+.stat-delta { font-size: .66rem; }
+.stat-delta.positive { color: var(--green); }
+.stat-delta.neutral  { color: var(--lo); }
+.stat-delta.negative { color: var(--red); }
+.stat-spark { height: 28px; margin-top: auto; }
+
+/* PRIMARY CHART */
+.chart-panel-main { position: relative; }
+.chart-controls { display: flex; align-items: center; gap: 1.5rem; }
+.chart-legend { display: flex; gap: 1rem; }
+.legend-item { display: flex; align-items: center; gap: .4rem; font-size: .7rem; color: var(--lo); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot-notes { background: var(--accent); box-shadow: 0 0 6px var(--accent-glow); }
+.dot-words { background: var(--green); box-shadow: 0 0 6px rgba(110,231,183,0.25); }
+.chart-container { position: relative; height: 260px; }
+#productivityChart { width: 100% !important; height: 100% !important; }
+.peak-badge {
+  position: absolute; top: 18px; right: 18px;
+  display: flex; align-items: center; gap: .35rem;
+  background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.25);
+  color: var(--yellow); font-size: .65rem; font-weight: 500;
+  padding: .25rem .6rem; border-radius: 20px; letter-spacing: .06em;
+  pointer-events: none;
+}
+.peak-badge svg { width: 9px; height: 9px; fill: var(--yellow); }
+
+/* MIDDLE ROW */
+.mid-row {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 1.4rem;
+}
+.kn-stats-row {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: .6rem; margin-bottom: 1.2rem;
+}
+.kn-stat {
+  background: rgba(255,255,255,0.025); border: 1px solid var(--brd);
+  border-radius: 10px; padding: .8rem .9rem; text-align: center;
+}
+.kn-stat-val { font-family: var(--serif); font-size: 1.5rem; color: var(--hi); font-weight: 300; line-height: 1; margin-bottom: .2rem; }
+.kn-stat-label { font-size: .62rem; color: var(--lo); text-transform: uppercase; letter-spacing: .06em; }
+.mini-graph-wrap { position: relative; }
+#miniGraph { width: 100%; height: 140px; display: block; }
+.mini-graph-label { font-size: .62rem; color: var(--lo); text-align: center; margin-top: .5rem; letter-spacing: .06em; text-transform: uppercase; }
+
+/* HEATMAP */
+.heatmap-panel { display: flex; flex-direction: column; }
+.heatmap-months {
+  display: flex; margin-bottom: .5rem; padding-left: 26px;
+  font-size: .6rem; color: var(--lo); letter-spacing: .04em;
+}
+.heatmap-month-label { flex: 1; text-align: left; }
+.heatmap-grid-wrap { display: flex; gap: .5rem; align-items: flex-start; flex: 1; }
+.heatmap-days { display: flex; flex-direction: column; gap: 0; flex-shrink: 0; padding-top: 1px; }
+.heatmap-days span { font-size: .58rem; color: var(--lo); display: block; height: 14px; line-height: 14px; }
+.heatmap-days span:nth-child(2) { margin-top: calc(14px + 3px); }
+.heatmap-days span:nth-child(3) { margin-top: calc(14px + 3px); }
+.heatmap-grid {
+  display: grid;
+  grid-template-rows: repeat(7, 14px);
+  grid-auto-flow: column;
+  grid-auto-columns: 14px;
+  gap: 3px;
+  flex: 1;
+}
+.hm-cell-item {
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: transform .12s, filter .12s;
+}
+.hm-cell-item:hover { transform: scale(1.25); filter: brightness(1.3); z-index: 5; }
+.hm-cell-item[data-level="0"] { background: rgba(255,255,255,0.04); }
+.hm-cell-item[data-level="1"] { background: rgba(124,58,237,0.3); }
+.hm-cell-item[data-level="2"] { background: rgba(124,58,237,0.5); }
+.hm-cell-item[data-level="3"] { background: rgba(124,58,237,0.72); }
+.hm-cell-item[data-level="4"] { background: rgba(167,139,250,0.92); box-shadow: 0 0 6px rgba(167,139,250,0.3); }
+.heatmap-legend { display: flex; align-items: center; gap: 5px; margin-top: .85rem; padding-left: 26px; }
+.hm-leg-label { font-size: .58rem; color: var(--lo); }
+.hm-cell { width: 14px; height: 14px; border-radius: 3px; }
+.hm-cell.lv0 { background: rgba(255,255,255,0.04); }
+.hm-cell.lv1 { background: rgba(124,58,237,0.3); }
+.hm-cell.lv2 { background: rgba(124,58,237,0.5); }
+.hm-cell.lv3 { background: rgba(124,58,237,0.72); }
+.hm-cell.lv4 { background: rgba(167,139,250,0.92); }
+
+/* INSIGHT ENGINE */
+.section-header { display: flex; align-items: baseline; gap: .75rem; }
+.section-title {
+  font-family: var(--serif); font-size: 1.15rem; font-weight: 400;
+  color: var(--hi); letter-spacing: .03em;
+  display: flex; align-items: center; gap: .5rem;
+}
+.section-title-icon { width: 18px; height: 18px; color: var(--accent); display: flex; align-items: center; }
+.section-title-icon svg { width: 100%; height: 100%; }
+.section-desc-sm { font-size: .72rem; color: var(--lo); }
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.insight-card {
+  border-radius: var(--r); padding: 1.1rem 1.2rem;
+  border: 1px solid var(--brd);
+  display: flex; flex-direction: column; gap: .7rem;
+  position: relative; overflow: hidden;
+  transition: border-color .22s, transform .2s, box-shadow .2s;
+}
+.insight-card:hover { transform: translateY(-2px); }
+.insight-warning  { background: rgba(251,191,36,0.04);  border-color: rgba(251,191,36,0.12);  }
+.insight-warning:hover  { border-color: rgba(251,191,36,0.28);  box-shadow: 0 8px 28px rgba(251,191,36,0.06);  }
+.insight-highlight{ background: rgba(167,139,250,0.04); border-color: rgba(167,139,250,0.12); }
+.insight-highlight:hover{ border-color: rgba(167,139,250,0.28); box-shadow: 0 8px 28px rgba(167,139,250,0.08); }
+.insight-pattern  { background: rgba(110,231,183,0.04); border-color: rgba(110,231,183,0.12); }
+.insight-pattern:hover  { border-color: rgba(110,231,183,0.28); box-shadow: 0 8px 28px rgba(110,231,183,0.06); }
+.insight-weak     { background: rgba(248,113,113,0.04); border-color: rgba(248,113,113,0.12); }
+.insight-weak:hover     { border-color: rgba(248,113,113,0.28); box-shadow: 0 8px 28px rgba(248,113,113,0.06); }
+.insight-header { display: flex; align-items: center; justify-content: space-between; }
+.insight-type {
+  font-size: .58rem; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; padding: .18rem .5rem; border-radius: 20px;
+}
+.insight-warning  .insight-type { background: rgba(251,191,36,0.15);  color: var(--yellow); }
+.insight-highlight .insight-type{ background: var(--accent-dim);       color: var(--accent); }
+.insight-pattern  .insight-type { background: var(--green-dim);        color: var(--green);  }
+.insight-weak     .insight-type { background: var(--red-dim);          color: var(--red);    }
+.insight-expand {
+  width: 22px; height: 22px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--lo); transition: background .18s, color .18s, transform .25s;
+}
+.insight-expand:hover { background: var(--surface-hi); color: var(--mid); }
+.insight-expand.expanded svg { transform: rotate(180deg); }
+.insight-expand svg { width: 12px; height: 12px; transition: transform .25s; }
+.insight-text { font-size: .82rem; color: var(--mid); line-height: 1.55; }
+.insight-text em { font-style: normal; color: var(--hi); }
+.insight-text strong { font-weight: 500; color: var(--hi); }
+.insight-detail {
+  font-size: .76rem; color: var(--lo); line-height: 1.6;
+  display: none; border-top: 1px solid var(--brd); padding-top: .7rem;
+}
+.insight-detail.open { display: block; }
+.insight-action-btn {
+  display: inline-block; margin-top: .6rem;
+  font-size: .72rem; color: var(--accent);
+  padding: .25rem .6rem; border-radius: 6px;
+  border: 1px solid rgba(167,139,250,0.2);
+  transition: background .18s, color .18s;
+}
+.insight-action-btn:hover { background: var(--accent-dim); }
+.insight-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: .5rem; border-top: 1px solid var(--brd); margin-top: auto;
+}
+.insight-tag { font-size: .62rem; color: var(--lo); }
+.insight-confidence { font-size: .62rem; color: var(--lo); opacity: .7; }
+
+/* BOTTOM ROW */
+.bot-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.4fr 1fr;
+  gap: 1.4rem;
+}
+.insights-section { display: flex; flex-direction: column; gap: 1rem; }
+.tag-chart-wrap { display: flex; gap: 1.2rem; align-items: flex-start; }
+.tag-donut-wrap { position: relative; flex-shrink: 0; width: 140px; height: 140px; }
+#tagChart { width: 140px !important; height: 140px !important; }
+.donut-center {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  text-align: center; pointer-events: none;
+}
+.donut-num { font-family: var(--serif); font-size: 1.6rem; font-weight: 300; color: var(--hi); display: block; line-height: 1; }
+.donut-label { font-size: .6rem; color: var(--lo); text-transform: uppercase; letter-spacing: .08em; }
+.tag-list { flex: 1; display: flex; flex-direction: column; gap: .55rem; overflow: hidden; }
+.tag-item {
+  display: flex; align-items: center; gap: .6rem;
+  cursor: pointer;
+  padding: .3rem .5rem; border-radius: 7px;
+  transition: background .18s;
+}
+.tag-item:hover { background: var(--surface-hi); }
+.tag-swatch { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.tag-name { font-size: .75rem; color: var(--mid); flex: 1; }
+.tag-count { font-size: .68rem; color: var(--lo); font-family: var(--serif); }
+
+/* LINKED BARS */
+.linked-bars { display: flex; flex-direction: column; gap: .75rem; }
+.linked-bar-item { display: flex; flex-direction: column; gap: .3rem; }
+.linked-bar-top { display: flex; justify-content: space-between; }
+.linked-bar-name { font-size: .78rem; color: var(--hi); font-weight: 400; }
+.linked-bar-count { font-size: .7rem; color: var(--accent); font-family: var(--serif); }
+.linked-bar-track { height: 5px; border-radius: 5px; background: var(--very-lo); overflow: hidden; }
+.linked-bar-fill  { height: 100%; border-radius: 5px; background: linear-gradient(90deg, #7c3aed, var(--accent)); width: 0; transition: width .9s var(--ease); }
+
+/* WRITING TIME */
+.time-grid-wrap { display: flex; flex-direction: column; gap: .5rem; }
+.time-grid { display: grid; grid-template-columns: repeat(18, 1fr); gap: 2px; }
+.time-cell {
+  height: 18px; border-radius: 3px;
+  background: rgba(255,255,255,0.04);
+  transition: transform .15s; cursor: default;
+}
+.time-cell[data-intensity="1"] { background: rgba(167,139,250,0.25); }
+.time-cell[data-intensity="2"] { background: rgba(167,139,250,0.5); }
+.time-cell[data-intensity="3"] { background: rgba(167,139,250,0.75); }
+.time-cell[data-intensity="4"] { background: rgba(167,139,250,1); box-shadow: 0 0 4px rgba(167,139,250,0.3); }
+.time-cell:hover { transform: scaleY(1.3); }
+.time-labels { display: flex; justify-content: space-between; }
+.time-labels span { font-size: .58rem; color: var(--lo); }
+.time-peak-note {
+  display: flex; align-items: center; gap: .35rem;
+  font-size: .7rem; color: var(--lo); margin-top: .5rem;
+}
+.time-peak-note svg { width: 10px; height: 10px; fill: var(--yellow); flex-shrink: 0; }
+.time-peak-note strong { color: var(--hi); font-weight: 400; }
+
+/* SCROLL REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .5s var(--ease), transform .5s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 1300px) {
+  .stat-row { grid-template-columns: repeat(3,1fr); }
+  .insights-grid { grid-template-columns: repeat(2,1fr); }
+  .bot-row { grid-template-columns: 1fr 1fr; }
+  .time-panel { grid-column: 1/-1; }
+}
+@media (max-width: 1050px) {
+  .mid-row { grid-template-columns: 1fr; }
+  .bot-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
+  .stat-row { grid-template-columns: repeat(2,1fr); }
+  .insights-grid { grid-template-columns: 1fr; }
+  .range-selector { display: none; }
+}
+@media (max-width: 620px) {
+  .sidebar { width: var(--sidebar-w-c) !important; }
+  .brand-text, .nav-label { opacity: 0 !important; pointer-events: none !important; }
+  .nav-item { padding: .6rem !important; justify-content: center !important; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+  .content { padding: 1rem; }
+}
+  </style>
+</head>
+<body>
+
+  <div class="bg-base"></div>
+
+  <div class="app-shell" id="appShell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">
+          <div class="bm-ring r1"></div>
+          <div class="bm-ring r2"></div>
+          <div class="bm-dot"></div>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Minerva</span>
+          <span class="brand-tag">Digital Brain</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <a href="../dashboard/dashboard.html" class="nav-item" data-label="Dashboard">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+          </span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="../notes/notes.html" class="nav-item" data-label="Notes">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M4 4h12v10H4V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><line x1="7" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1"/><line x1="7" y1="11" x2="11" y2="11" stroke="currentColor" stroke-width="1"/></svg>
+          </span>
+          <span class="nav-label">Notes</span>
+        </a>
+        <a href="../goals/goals.html" class="nav-item" data-label="Goals">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="10" r="3.5" stroke="currentColor" stroke-width="1"/><circle cx="10" cy="10" r="1" fill="currentColor"/></svg>
+          </span>
+          <span class="nav-label">Goals</span>
+        </a>
+        <a href="../analytics/analytics.html" class="nav-item active" data-label="Analytics">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="none"><polyline points="3,15 7,9 11,12 15,5 17,7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="nav-label">Analytics</span>
+        </a>
+        <a href="../graph/graph.html" class="nav-item" data-label="Graph">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="4" cy="5" r="1.5" stroke="currentColor" stroke-width="1"/><circle cx="16" cy="5" r="1.5" stroke="currentColor" stroke-width="1"/><circle cx="4" cy="15" r="1.5" stroke="currentColor" stroke-width="1"/><circle cx="16" cy="15" r="1.5" stroke="currentColor" stroke-width="1"/><line x1="5.5" y1="6" x2="8.5" y2="8.5" stroke="currentColor" stroke-width="1"/><line x1="14.5" y1="6" x2="11.5" y2="8.5" stroke="currentColor" stroke-width="1"/><line x1="5.5" y1="14" x2="8.5" y2="11.5" stroke="currentColor" stroke-width="1"/><line x1="14.5" y1="14" x2="11.5" y2="11.5" stroke="currentColor" stroke-width="1"/></svg>
+          </span>
+          <span class="nav-label">Graph</span>
+        </a>
+        <a href="../timeline/timeline.html" class="nav-item" data-label="Timeline">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="none"><line x1="10" y1="2" x2="10" y2="18" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="5" r="2" stroke="currentColor" stroke-width="1"/><circle cx="10" cy="10" r="2" fill="currentColor" opacity=".4"/><circle cx="10" cy="15" r="2" stroke="currentColor" stroke-width="1"/><line x1="10" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1"/><line x1="10" y1="10" x2="5" y2="10" stroke="currentColor" stroke-width="1"/><line x1="10" y1="15" x2="15" y2="15" stroke="currentColor" stroke-width="1"/></svg>
+          </span>
+          <span class="nav-label">Timeline</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a href="../settings/settings.html" class="nav-item" data-label="Settings">
+          <span class="nav-icon">
+            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </nav>
+
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <div class="main-wrap">
+
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="page-title">Analytics</h1>
+          <p class="page-date" id="pageDate"></p>
+        </div>
+        <div class="topbar-right">
+          <div class="range-selector">
+            <button class="range-btn active" data-range="7">7d</button>
+            <button class="range-btn" data-range="30">30d</button>
+            <button class="range-btn" data-range="90">90d</button>
+            <button class="range-btn" data-range="0">All</button>
+          </div>
+          <div class="search-pill">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4" stroke="currentColor" stroke-width="1.2"/><line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Search…" class="search-input" />
+          </div>
+          <button class="icon-btn" aria-label="Notifications">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M10 2a6 6 0 016 6c0 3 1 4 2 5H2c1-1 2-2 2-5a6 6 0 016-6z" stroke="currentColor" stroke-width="1.3"/><path d="M8.5 17a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3"/></svg>
+            <span class="notif-dot"></span>
+          </button>
+          <button class="avatar-btn" id="avatarBtn" aria-label="Profile">
+            <span class="avatar-initials" id="avatarInitials">TM</span>
+          </button>
+          <div class="avatar-menu" id="avatarMenu">
+            <div class="avatar-menu-user" id="avatarMenuName"></div>
+            <div class="avatar-menu-email" id="avatarMenuEmail"></div>
+            <div class="avatar-menu-divider"></div>
+            <button class="avatar-menu-item" id="logoutBtn">Sign out</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="content">
+
+        <!-- SECTION INTRO -->
+        <div class="section-intro reveal" data-delay="0">
+          <div class="section-intro-inner">
+            <span class="section-eyebrow">Cognitive Analytics</span>
+            <p class="section-desc">Your thinking patterns, learning velocity, and knowledge network — visualised.</p>
+          </div>
+          <div class="brain-pulse" aria-hidden="true">
+            <span class="pulse-ring r1"></span>
+            <span class="pulse-ring r2"></span>
+            <span class="pulse-ring r3"></span>
+            <svg class="pulse-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor" opacity=".15"/><path d="M3 12h3l2-5 3 10 3-7 2 4 2-2h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+
+        <!-- STAT CARDS -->
+        <section class="stat-row" aria-label="Overview statistics">
+          <div class="stat-card reveal" data-delay="40" data-stat-key="totalNotes">
+            <div class="stat-icon-wrap">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v14H4V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><line x1="8" y1="9" x2="16" y2="9" stroke="currentColor" stroke-width="1"/><line x1="8" y1="13" x2="13" y2="13" stroke="currentColor" stroke-width="1"/></svg>
+              </div>
+            </div>
+            <div class="stat-body">
+              <p class="stat-label">Total Notes</p>
+              <p class="stat-value" data-target="142">0</p>
+              <p class="stat-delta positive">↑ 12% vs last week</p>
+            </div>
+            <div class="stat-spark" id="spark-notes"></div>
+          </div>
+
+          <div class="stat-card reveal" data-delay="80" data-stat-key="totalWords">
+            <div class="stat-icon-wrap">
+              <div class="stat-icon icon-green">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="stat-body">
+              <p class="stat-label">Words Written</p>
+              <p class="stat-value" data-target="24870" data-format="compact">0</p>
+              <p class="stat-delta positive">↑ 8% vs last week</p>
+            </div>
+            <div class="stat-spark" id="spark-words"></div>
+          </div>
+
+          <div class="stat-card reveal" data-delay="120" data-stat-key="notesWeek">
+            <div class="stat-icon-wrap">
+              <div class="stat-icon icon-yellow">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              </div>
+            </div>
+            <div class="stat-body">
+              <p class="stat-label">Links Created</p>
+              <p class="stat-value" data-target="387">0</p>
+              <p class="stat-delta positive">↑ 21% vs last week</p>
+            </div>
+            <div class="stat-spark" id="spark-links"></div>
+          </div>
+
+          <div class="stat-card reveal" data-delay="160" data-stat-key="activeTag">
+            <div class="stat-icon-wrap">
+              <div class="stat-icon icon-red">
+                <svg viewBox="0 0 24 24" fill="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26 12,2" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="stat-body">
+              <p class="stat-label">Most Active Tag</p>
+              <p class="stat-value tag-value">#ideas</p>
+              <p class="stat-delta neutral">47 notes tagged</p>
+            </div>
+          </div>
+
+          <div class="stat-card reveal" data-delay="200" data-stat-key="activeGoals">
+            <div class="stat-icon-wrap">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.3"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="1.3"/></svg>
+              </div>
+            </div>
+            <div class="stat-body">
+              <p class="stat-label">Notes This Week</p>
+              <p class="stat-value" data-target="19">0</p>
+              <p class="stat-delta positive">↑ 3 vs last week</p>
+            </div>
+            <div class="stat-spark" id="spark-week"></div>
+          </div>
+
+          <div class="stat-card reveal" data-delay="240" data-stat-key="streak">
+            <div class="stat-icon-wrap">
+              <div class="stat-icon icon-orange">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="stat-body">
+              <p class="stat-label">Active Streak</p>
+              <p class="stat-value" data-target="27" data-suffix=" days">0 days</p>
+              <p class="stat-delta positive">Personal best!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- PRIMARY CHART -->
+        <section class="primary-chart-section reveal" data-delay="60">
+          <div class="panel chart-panel-main">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Productivity Over Time</h2>
+                <p class="panel-subtitle">Notes created and words written per day</p>
+              </div>
+              <div class="chart-controls">
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-dot dot-notes"></span>Notes</span>
+                  <span class="legend-item"><span class="legend-dot dot-words"></span>Words (÷100)</span>
+                </div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="productivityChart"></canvas>
+              <div class="peak-badge" id="peakBadge">
+                <svg viewBox="0 0 12 12" fill="none"><polygon points="6,1 7.8,4.6 12,5.3 9,8.2 9.7,12 6,10.1 2.3,12 3,8.2 0,5.3 4.2,4.6" fill="currentColor"/></svg>
+                Peak day
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- KNOWLEDGE + HEATMAP -->
+        <section class="mid-row">
+          <div class="panel knowledge-panel reveal" data-delay="80">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Knowledge Network</h2>
+                <p class="panel-subtitle">Connection density &amp; growth</p>
+              </div>
+              <span class="panel-badge">Growing</span>
+            </div>
+            <div class="kn-stats-row">
+              <div class="kn-stat">
+                <p class="kn-stat-val" data-target="387">0</p>
+                <p class="kn-stat-label">Connections</p>
+              </div>
+              <div class="kn-stat">
+                <p class="kn-stat-val" data-target="2.7" data-suffix="x">0</p>
+                <p class="kn-stat-label">Density</p>
+              </div>
+              <div class="kn-stat">
+                <p class="kn-stat-val" data-target="94" data-suffix="%">0</p>
+                <p class="kn-stat-label">Connected</p>
+              </div>
+            </div>
+            <div class="mini-graph-wrap">
+              <canvas id="miniGraph" width="260" height="140"></canvas>
+              <div class="mini-graph-label">Most linked notes</div>
+            </div>
+          </div>
+
+          <div class="panel heatmap-panel reveal" data-delay="120">
+            <div class="panel-header">
+              <h2 class="panel-title">Activity Heatmap</h2>
+              <span class="panel-badge badge-purple">Last 12 weeks</span>
+            </div>
+            <div class="heatmap-months" id="heatmapMonths"></div>
+            <div class="heatmap-grid-wrap">
+              <div class="heatmap-days">
+                <span>Mon</span>
+                <span>Wed</span>
+                <span>Fri</span>
+              </div>
+              <div class="heatmap-grid" id="heatmapGrid"></div>
+            </div>
+            <div class="heatmap-legend">
+              <span class="hm-leg-label">Less</span>
+              <span class="hm-cell lv0"></span>
+              <span class="hm-cell lv1"></span>
+              <span class="hm-cell lv2"></span>
+              <span class="hm-cell lv3"></span>
+              <span class="hm-cell lv4"></span>
+              <span class="hm-leg-label">More</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- INSIGHT ENGINE -->
+        <section class="insights-section">
+          <div class="section-header reveal" data-delay="0">
+            <h2 class="section-title">
+              <span class="section-title-icon">
+                <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M10 6v4l2.5 2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              </span>
+              Insight Engine
+            </h2>
+            <p class="section-desc-sm">Minerva's observations about your thinking patterns</p>
+          </div>
+
+          <div class="insights-grid">
+            <div class="insight-card insight-warning reveal" data-delay="40">
+              <div class="insight-header">
+                <span class="insight-type">Dormant Topic</span>
+                <button class="insight-expand" aria-label="Expand">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+              <p class="insight-text">You haven't revisited <em>Machine Learning Fundamentals</em> in <strong>14 days</strong>.</p>
+              <div class="insight-detail">
+                <p>This topic has 8 connected notes and was frequently visited 3 weeks ago. Consider linking it to your recent TypeScript notes — they share 4 common concepts.</p>
+                <button class="insight-action-btn">Revisit now →</button>
+              </div>
+              <div class="insight-footer">
+                <span class="insight-tag">14 notes linked</span>
+                <span class="insight-confidence">High relevance</span>
+              </div>
+            </div>
+
+            <div class="insight-card insight-highlight reveal" data-delay="80">
+              <div class="insight-header">
+                <span class="insight-type">Core Concept</span>
+                <button class="insight-expand" aria-label="Expand">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+              <p class="insight-text">Your most connected idea is <em>Second Brain Architecture</em> — linked to <strong>23 other notes</strong>.</p>
+              <div class="insight-detail">
+                <p>This note acts as a hub in your knowledge graph. Notes connected to it are visited 3× more often than average. It may represent a core mental model.</p>
+                <button class="insight-action-btn">View connections →</button>
+              </div>
+              <div class="insight-footer">
+                <span class="insight-tag">23 connections</span>
+                <span class="insight-confidence">Knowledge hub</span>
+              </div>
+            </div>
+
+            <div class="insight-card insight-pattern reveal" data-delay="120">
+              <div class="insight-header">
+                <span class="insight-type">Writing Pattern</span>
+                <button class="insight-expand" aria-label="Expand">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+              <p class="insight-text">Loading your writing patterns…</p>
+              <div class="insight-detail">
+                <p>Your peak focus window will be shown here once data loads.</p>
+                <button class="insight-action-btn">View time map →</button>
+              </div>
+              <div class="insight-footer">
+                <span class="insight-tag">Evening thinker</span>
+                <span class="insight-confidence">12-week pattern</span>
+              </div>
+            </div>
+
+            <div class="insight-card insight-weak reveal" data-delay="160">
+              <div class="insight-header">
+                <span class="insight-type">Weak Connections</span>
+                <button class="insight-expand" aria-label="Expand">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+              <p class="insight-text">These <strong>3 notes</strong> are isolated — no links and not visited in 30+ days.</p>
+              <div class="insight-detail">
+                <p>Zettelkasten Principles, Focus Techniques, and API Design Patterns have never been linked to any other notes. Consider connecting or archiving them.</p>
+                <button class="insight-action-btn">Review orphans →</button>
+              </div>
+              <div class="insight-footer">
+                <span class="insight-tag">3 orphan notes</span>
+                <span class="insight-confidence">Needs attention</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- BOTTOM ROW -->
+        <section class="bot-row">
+          <div class="panel tag-panel reveal" data-delay="60">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Tag Distribution</h2>
+                <p class="panel-subtitle">Topic depth across your notes</p>
+              </div>
+            </div>
+            <div class="tag-chart-wrap">
+              <div class="tag-donut-wrap">
+                <canvas id="tagChart" width="140" height="140"></canvas>
+                <div class="donut-center">
+                  <span class="donut-num">6</span>
+                  <span class="donut-label">tags</span>
+                </div>
+              </div>
+              <div class="tag-list" id="tagList"></div>
+            </div>
+          </div>
+
+          <div class="panel linked-panel reveal" data-delay="100">
+            <div class="panel-header">
+              <h2 class="panel-title">Most Linked Notes</h2>
+              <a href="#" class="panel-link">View graph →</a>
+            </div>
+            <div class="linked-bars" id="linkedBars"></div>
+          </div>
+
+          <div class="panel time-panel reveal" data-delay="140">
+            <div class="panel-header">
+              <h2 class="panel-title">Writing Hours</h2>
+              <span class="panel-badge">This month</span>
+            </div>
+            <div class="time-grid-wrap">
+              <div class="time-grid" id="timeGrid"></div>
+              <div class="time-labels">
+                <span>6am</span><span>9am</span><span>12pm</span>
+                <span>3pm</span><span>6pm</span><span>9pm</span>
+              </div>
+            </div>
+            <p class="time-peak-note">
+              <svg viewBox="0 0 14 14" fill="none"><polygon points="7,1 8.8,4.6 13,5.3 10,8.2 10.7,12 7,10.1 3.3,12 4,8.2 1,5.3 5.2,4.6" fill="currentColor"/></svg>
+              Peak window: <strong id="peakHourLabel">—</strong>
+            </p>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+'use strict'
+
+// ── Auth ───────────────────────────────────────────
+const token = localStorage.getItem('token')
+const user  = JSON.parse(localStorage.getItem('user') || 'null')
+if (!token || !user) { window.location.href = '../auth/login.html' }
+
+// ── Date + user info ───────────────────────────────
+const dateEl = document.getElementById('pageDate')
+if (dateEl && user) {
+  const now = new Date()
+  const firstName = user.name ? user.name.split(' ')[0] : 'You'
+  dateEl.textContent = `${firstName} · ${now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}`
+}
+
+// Avatar initials
+const initialsEl = document.getElementById('avatarInitials')
+if (initialsEl && user?.name) {
+  initialsEl.textContent = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2)
+}
+
+// Avatar menu name/email
+const menuNameEl  = document.getElementById('avatarMenuName')
+const menuEmailEl = document.getElementById('avatarMenuEmail')
+if (menuNameEl  && user?.name)  menuNameEl.textContent  = user.name
+if (menuEmailEl && user?.email) menuEmailEl.textContent = user.email
+
+// ── Avatar menu ────────────────────────────────────
+const avatarBtn  = document.getElementById('avatarBtn')
+const avatarMenu = document.getElementById('avatarMenu')
+avatarBtn?.addEventListener('click', e => { e.stopPropagation(); avatarMenu.classList.toggle('open') })
+document.addEventListener('click', () => avatarMenu?.classList.remove('open'))
+
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  window.location.href = '../auth/login.html'
+})
+
+// ── Sidebar ────────────────────────────────────────
+document.getElementById('sidebarToggle')?.addEventListener('click', () =>
+  document.getElementById('sidebar').classList.toggle('collapsed'))
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let API_DATA = null
+let activeRange = 7
+let productivityChart = null
+
+const TAG_COLORS = [
+  'rgba(167,139,250,0.9)','rgba(110,231,183,0.9)','rgba(251,191,36,0.9)',
+  'rgba(251,146,60,0.9)', 'rgba(96,165,250,0.9)', 'rgba(248,113,113,0.9)',
+  'rgba(167,243,208,0.9)','rgba(196,181,253,0.9)',
+]
+
+// ══════════════════════════════════════════════════
+// MOCK DATA
+// ══════════════════════════════════════════════════
+function buildMockData() {
+  function gen(days,min,max) {
+    const a=[]; let v=Math.round((min+max)/2)
+    for(let i=0;i<days;i++){v=Math.max(min,Math.min(max,v+(Math.random()-0.45)*(max-min)*0.3));a.push(Math.round(v))}
+    return a
+  }
+  function lbls(days) {
+    const a=[],t=new Date()
+    for(let i=days-1;i>=0;i--){const d=new Date(t);d.setDate(t.getDate()-i);a.push(d.toLocaleDateString('en-US',{month:'short',day:'numeric'}))}
+    return a
+  }
+  const n7=gen(7,0,8),n30=gen(30,0,10),n90=gen(90,0,12)
+  const heatmap=[]
+  for(let i=139;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i)
+    const r=Math.abs(Math.sin(d.getDate()+d.getMonth()*31+1)*10000)%1
+    const level=r<0.2?0:r<0.45?1:r<0.65?2:r<0.82?3:4
+    heatmap.push({date:d.toISOString().split('T')[0],count:[0,1,3,6,10][level],level})
+  }
+  return {
+    overview:{totalNotes:142,totalWords:24870,notesThisWeek:19,activeGoals:8,streak:27,
+              mostActiveTag:'ideas',mostActiveTagCount:47,notesWoWDelta:12,wordsWoWDelta:8},
+    productivity7: {notes:n7, words:n7.map(v=>v*180), labels:lbls(7)},
+    productivity30:{notes:n30,words:n30.map(v=>v*180),labels:lbls(30)},
+    productivity90:{notes:n90,words:n90.map(v=>v*180),labels:lbls(90)},
+    tagDistribution:[
+      {label:'#ideas',count:47},{label:'#research',count:34},{label:'#project',count:28},
+      {label:'#learning',count:22},{label:'#design',count:18},{label:'#personal',count:14}
+    ],
+    linkedNotes:[
+      {name:'Second Brain Architecture',count:23},
+      {name:'TypeScript Patterns',count:17},
+      {name:'Design Systems',count:14},
+      {name:'ML Fundamentals',count:11},
+      {name:'API Design Patterns',count:8},
+    ],
+    heatmap,
+    writingHours:[0,0,0,0,0,0,1,1,2,1,1,1,1,1,2,3,2,4,4,3,3,2,1,0],
+    peakWritingHour:'8pm–10pm',
+  }
+}
+
+// ══════════════════════════════════════════════════
+// RENDER ALL
+// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// UPDATE STAT CARDS FROM REAL DATA
+// ══════════════════════════════════════════════════
+function updateStatCards() {
+  const o = API_DATA.overview
+
+  // Helper: set a data-target so the counter animation picks it up on reveal
+  function setVal(key, value, suffix, format) {
+    const card = document.querySelector(`[data-stat-key="${key}"]`)
+    if (!card) return
+    const el = card.querySelector('.stat-value')
+    if (!el) return
+    if (typeof value === 'string') {
+      // String values (like tag name) — set directly, no counter
+      el.textContent = value
+      delete el.dataset.target
+      return
+    }
+    el.dataset.target = value
+    if (suffix) el.dataset.suffix = suffix
+    if (format) el.dataset.format = format
+    el.textContent = '—'
+  }
+
+  function setDelta(key, text, cls) {
+    const card = document.querySelector(`[data-stat-key="${key}"]`)
+    if (!card) return
+    const el = card.querySelector('.stat-delta')
+    if (!el) return
+    el.textContent = text
+    el.className = `stat-delta ${cls || 'neutral'}`
+  }
+
+  // Stat values
+  setVal('totalNotes',  o.totalNotes)
+  setVal('totalWords',  o.totalWords,  '',       'compact')
+  setVal('notesWeek',   o.notesThisWeek)
+  setVal('activeGoals', o.notesThisWeek)
+  setVal('streak',      o.streak,      ' days')
+  setVal('activeTag',   `#${(o.mostActiveTag || 'note').toLowerCase()}`)
+
+  // Deltas
+  const nd = o.notesWoWDelta
+  const wd = o.wordsWoWDelta
+  setDelta('totalNotes', `${nd >= 0 ? '↑' : '↓'} ${Math.abs(nd)}% vs last week`, nd >= 0 ? 'positive' : 'negative')
+  setDelta('totalWords', `${wd >= 0 ? '↑' : '↓'} ${Math.abs(wd)}% vs last week`, wd >= 0 ? 'positive' : 'negative')
+  setDelta('activeTag',  `${o.mostActiveTagCount} notes tagged`, 'neutral')
+  setDelta('streak',     o.streak > 0 ? '🔥 Keep it going!' : 'Start your streak today', 'positive')
+  setDelta('notesWeek',  `${nd >= 0 ? '↑' : '↓'} ${Math.abs(nd)} vs last week`, nd >= 0 ? 'positive' : 'negative')
+
+  // Knowledge network mini stats — update data-target so counter animates
+  const knVals = document.querySelectorAll('.kn-stat-val')
+  if (knVals[0]) { knVals[0].dataset.target = o.totalNotes; knVals[0].textContent = '—' }
+  if (knVals[1]) {
+    // Density = avg tags per note, capped to 1 decimal
+    const density = o.totalNotes > 0
+      ? Math.round((o.mostActiveTagCount / o.totalNotes) * 10) / 10
+      : 0
+    knVals[1].dataset.target = density
+    knVals[1].dataset.suffix = 'x'
+    knVals[1].textContent = '—'
+  }
+  if (knVals[2]) {
+    // % of notes that have at least one tag (use mostActiveTagCount as proxy)
+    const pct = o.totalNotes > 0 ? Math.min(100, Math.round((o.mostActiveTagCount / o.totalNotes) * 100)) : 0
+    knVals[2].dataset.target = pct
+    knVals[2].dataset.suffix = '%'
+    knVals[2].textContent = '—'
+  }
+}
+
+// ══════════════════════════════════════════════════
+// UPDATE INSIGHT CARDS FROM REAL DATA
+// ══════════════════════════════════════════════════
+function updateInsightCards() {
+  const o    = API_DATA.overview
+  const tags = API_DATA.tagDistribution || []
+  const top  = tags[0]?.label?.replace(/^#/, '') || 'your notes'
+  const peak = API_DATA.peakWritingHour || '—'
+
+  // Update peak hour label in writing hours panel
+  const peakEl = document.getElementById('peakHourLabel')
+  if (peakEl) peakEl.textContent = peak
+
+  // Insight card 1 — Dormant Topic: use 2nd most active tag as the "dormant" one
+  const dormantTag = tags[1]?.label || '#research'
+  const dormantCount = tags[1]?.count || 0
+  const ic1text = document.querySelector('.insight-warning .insight-text')
+  const ic1foot = document.querySelector('.insight-warning .insight-tag')
+  if (ic1text) ic1text.innerHTML = `Your <em>${dormantTag}</em> topic has <strong>${dormantCount} notes</strong> — consider revisiting it.`
+  if (ic1foot) ic1foot.textContent = `${dormantCount} notes tagged`
+
+  // Insight card 2 — Core Concept: most connected = most active tag
+  const hubTag = tags[0]?.label || '#ideas'
+  const hubCount = tags[0]?.count || 0
+  const ic2text = document.querySelector('.insight-highlight .insight-text')
+  const ic2foot = document.querySelector('.insight-highlight .insight-tag')
+  if (ic2text) ic2text.innerHTML = `Your most active topic is <em>${hubTag}</em> with <strong>${hubCount} notes</strong>.`
+  if (ic2foot) ic2foot.textContent = `${hubCount} notes`
+
+  // Insight card 3 — Writing Pattern: use real peak hour
+  const ic3text = document.querySelector('.insight-pattern .insight-text')
+  const ic3foot = document.querySelector('.insight-pattern .insight-confidence')
+  if (ic3text) ic3text.innerHTML = `You write most frequently around <strong>${peak}</strong> — your peak focus window.`
+  if (ic3foot) ic3foot.textContent = 'Based on your history'
+
+  // Insight card 4 — Streak / activity
+  const ic4text = document.querySelector('.insight-weak .insight-text')
+  const ic4foot = document.querySelector('.insight-weak .insight-tag')
+  if (o.streak > 0) {
+    if (ic4text) ic4text.innerHTML = `You're on a <strong>${o.streak}-day streak</strong>. Don't break the chain!`
+    if (ic4foot) ic4foot.textContent = `${o.streak} days active`
+  } else {
+    if (ic4text) ic4text.innerHTML = `You haven't created any notes <strong>today</strong>. Keep your streak alive!`
+    if (ic4foot) ic4foot.textContent = 'No activity today'
+  }
+}
+
+function renderAll() {
+  updateStatCards()
+  updateInsightCards()
+  renderProductivityChart(activeRange)
+  renderHeatmap()
+  renderTagChart()
+  renderLinkedBars()
+  renderWritingHours()
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      initScrollReveal()
+    })
+  })
+
+  const idle = window.requestIdleCallback || (cb => setTimeout(cb, 80))
+  idle(() => buildMiniGraph())
+  idle(() => initInsightCards())
+
+  setTimeout(() => {
+    const n7 = API_DATA.productivity7.notes
+    const w7 = API_DATA.productivity7.words.map(w => Math.round(w / 100))
+    drawSparkline('spark-notes', n7, 'rgba(167,139,250,0.9)')
+    drawSparkline('spark-words', w7, 'rgba(110,231,183,0.9)')
+    drawSparkline('spark-week',  n7, 'rgba(251,146,60,0.9)')
+    drawSparkline('spark-links', n7, 'rgba(251,191,36,0.9)')
+  }, 200)
+}
+
+// ══════════════════════════════════════════════════
+// PRODUCTIVITY CHART
+// ══════════════════════════════════════════════════
+function renderProductivityChart(range) {
+  const keyMap = { 7: 'productivity7', 30: 'productivity30', 90: 'productivity90' }
+  const data   = API_DATA[keyMap[range]] || API_DATA.productivity7
+  const scaled = data.words.map(w => Math.round(w / 100))
+
+  const canvas = document.getElementById('productivityChart')
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')
+
+  const ng = ctx.createLinearGradient(0,0,0,260)
+  ng.addColorStop(0,'rgba(167,139,250,0.3)'); ng.addColorStop(1,'rgba(167,139,250,0)')
+  const wg = ctx.createLinearGradient(0,0,0,260)
+  wg.addColorStop(0,'rgba(110,231,183,0.2)'); wg.addColorStop(1,'rgba(110,231,183,0)')
+
+  const cfg = {
+    type: 'line',
+    data: {
+      labels: data.labels,
+      datasets: [
+        {
+          label:'Notes', data:data.notes,
+          borderColor:'rgba(167,139,250,0.9)', backgroundColor:ng,
+          borderWidth:2, tension:0.4, fill:true, yAxisID:'yNotes',
+          pointRadius:3, pointBackgroundColor:'rgba(167,139,250,1)',
+          pointBorderColor:'#07070e', pointBorderWidth:2,
+        },
+        {
+          label:'Words ÷100', data:scaled,
+          borderColor:'rgba(110,231,183,0.7)', backgroundColor:wg,
+          borderWidth:1.5, tension:0.4, fill:true, yAxisID:'yWords', pointRadius:0,
+        }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      animation:{ duration:700, easing:'easeInOutQuart' },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{
+          backgroundColor:'rgba(12,10,24,0.95)', borderColor:'rgba(255,255,255,0.08)',
+          borderWidth:1, titleColor:'rgba(255,255,255,0.9)', bodyColor:'rgba(255,255,255,0.55)', padding:10,
+          callbacks:{ label: c => c.datasetIndex===0 ? `  Notes: ${c.parsed.y}` : `  Words: ~${c.parsed.y*100}` }
+        }
+      },
+      scales:{
+        x:{ grid:{color:'rgba(255,255,255,0.04)',drawTicks:false}, border:{display:false},
+            ticks:{color:'rgba(255,255,255,0.25)',font:{size:10},maxTicksLimit:range<=7?7:10,maxRotation:0} },
+        yNotes:{ position:'left', grid:{color:'rgba(255,255,255,0.04)',drawTicks:false}, border:{display:false},
+                 ticks:{color:'rgba(255,255,255,0.25)',font:{size:10},maxTicksLimit:5} },
+        yWords:{ position:'right', grid:{display:false}, border:{display:false},
+                 ticks:{color:'rgba(110,231,183,0.4)',font:{size:10},maxTicksLimit:5} }
+      }
+    }
+  }
+
+  if (productivityChart) {
+    productivityChart.data    = cfg.data
+    productivityChart.options = cfg.options
+    productivityChart.update('active')
+  } else {
+    productivityChart = new Chart(ctx, cfg)
+  }
+}
+
+document.querySelectorAll('.range-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'))
+    btn.classList.add('active')
+    activeRange = parseInt(btn.dataset.range) || 7
+    if (API_DATA) renderProductivityChart(activeRange)
+  })
+})
+
+// ══════════════════════════════════════════════════
+// HEATMAP
+// ══════════════════════════════════════════════════
+function renderHeatmap() {
+  const grid   = document.getElementById('heatmapGrid')
+  const months = document.getElementById('heatmapMonths')
+  if (!grid || !months) return
+
+  const cells = API_DATA.heatmap
+  const frag  = document.createDocumentFragment()
+  cells.forEach(cell => {
+    const el = document.createElement('div')
+    el.className     = 'hm-cell-item'
+    el.dataset.level = cell.level
+    el.title         = `${cell.date} · ${cell.count} note${cell.count!==1?'s':''}`
+    frag.appendChild(el)
+  })
+  grid.innerHTML = ''; grid.appendChild(frag)
+
+  const seen = {}
+  cells.forEach(c => {
+    const mon = new Date(c.date+'T00:00:00').toLocaleDateString('en-US',{month:'short'})
+    if (!seen[mon]) { seen[mon] = true }
+  })
+  const mFrag = document.createDocumentFragment()
+  Object.keys(seen).forEach(mon => {
+    const el = document.createElement('div')
+    el.className = 'heatmap-month-label'; el.textContent = mon
+    mFrag.appendChild(el)
+  })
+  months.innerHTML = ''; months.appendChild(mFrag)
+}
+
+// ══════════════════════════════════════════════════
+// TAG CHART
+// ══════════════════════════════════════════════════
+function renderTagChart() {
+  const canvas = document.getElementById('tagChart')
+  if (!canvas) return
+
+  const tags = API_DATA.tagDistribution.map((t,i) => ({...t, color: TAG_COLORS[i%TAG_COLORS.length]}))
+
+  const donutNum = document.querySelector('.donut-num')
+  if (donutNum) donutNum.textContent = tags.length
+
+  new Chart(canvas.getContext('2d'), {
+    type:'doughnut',
+    data:{
+      labels: tags.map(t=>t.label),
+      datasets:[{
+        data: tags.map(t=>t.count),
+        backgroundColor: tags.map(t=>t.color),
+        borderColor:'rgba(7,7,14,0.9)', borderWidth:2, hoverOffset:6
+      }]
+    },
+    options:{
+      responsive:false, cutout:'70%',
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:'rgba(12,10,24,0.95)',borderColor:'rgba(255,255,255,0.08)',
+                 borderWidth:1,titleColor:'rgba(255,255,255,0.9)',bodyColor:'rgba(255,255,255,0.55)',padding:8}
+      },
+      animation:{animateRotate:true,duration:900}
+    }
+  })
+
+  const list = document.getElementById('tagList')
+  if (!list) return
+  const frag = document.createDocumentFragment()
+  tags.forEach(tag => {
+    const item = document.createElement('div')
+    item.className = 'tag-item'
+    item.innerHTML = `<span class="tag-swatch" style="background:${tag.color}"></span><span class="tag-name">${tag.label}</span><span class="tag-count">${tag.count}</span>`
+    frag.appendChild(item)
+  })
+  list.innerHTML = ''; list.appendChild(frag)
+}
+
+// ══════════════════════════════════════════════════
+// LINKED BARS  ← was missing in original!
+// ══════════════════════════════════════════════════
+function renderLinkedBars() {
+  const container = document.getElementById('linkedBars')
+  if (!container) return
+  const notes = API_DATA.linkedNotes
+  const max   = Math.max(...notes.map(n => n.count))
+  const frag  = document.createDocumentFragment()
+  notes.forEach(note => {
+    const pct = Math.round((note.count / max) * 100)
+    const item = document.createElement('div')
+    item.className = 'linked-bar-item'
+    item.innerHTML = `
+      <div class="linked-bar-top">
+        <span class="linked-bar-name">${note.name}</span>
+        <span class="linked-bar-count">${note.count}</span>
+      </div>
+      <div class="linked-bar-track">
+        <div class="linked-bar-fill" data-width="${pct}" style="width:0%"></div>
+      </div>`
+    frag.appendChild(item)
+  })
+  container.innerHTML = ''; container.appendChild(frag)
+}
+
+// ══════════════════════════════════════════════════
+// WRITING HOURS
+// ══════════════════════════════════════════════════
+function renderWritingHours() {
+  const grid = document.getElementById('timeGrid')
+  if (!grid) return
+  const slice = API_DATA.writingHours.slice(6,24)
+  const rows  = [
+    slice,
+    slice.map(v => Math.max(0, v - (Math.random()>0.6?1:0))),
+    slice.map(v => Math.min(4, v + (Math.random()>0.75?1:0))),
+  ]
+  const frag = document.createDocumentFragment()
+  rows.forEach(row => row.forEach(v => {
+    const cell = document.createElement('div')
+    cell.className = 'time-cell'
+    if (v > 0) cell.dataset.intensity = Math.min(4, v)
+    frag.appendChild(cell)
+  }))
+  grid.innerHTML = ''; grid.appendChild(frag)
+}
+
+// ══════════════════════════════════════════════════
+// MINI GRAPH
+// ══════════════════════════════════════════════════
+function buildMiniGraph() {
+  const canvas = document.getElementById('miniGraph')
+  if (!canvas) return
+  const items = (API_DATA.tagDistribution||[]).slice(0,5).map(t=>({name:t.label,links:t.count}))
+  if (!items.length) return
+  const ctx = canvas.getContext('2d')
+  const W = canvas.offsetWidth || 260; const H = 140
+  canvas.width = W; canvas.height = H
+  const maxVal  = Math.max(...items.map(d=>d.links),1)
+  const barH=14, gap=8
+  const startY  = (H-(items.length*(barH+gap)-gap))/2
+  const barMaxW = W-48
+  ctx.clearRect(0,0,W,H)
+  items.forEach((item,i) => {
+    const y  = startY + i*(barH+gap)
+    const bw = (item.links/maxVal)*barMaxW
+    ctx.fillStyle='rgba(255,255,255,0.05)'
+    rr(ctx,0,y,barMaxW,barH,4); ctx.fill()
+    const grad=ctx.createLinearGradient(0,0,bw,0)
+    grad.addColorStop(0,'rgba(124,58,237,0.7)'); grad.addColorStop(1,'rgba(167,139,250,0.9)')
+    ctx.fillStyle=grad; rr(ctx,0,y,bw,barH,4); ctx.fill()
+    ctx.fillStyle='rgba(167,139,250,0.9)'; ctx.font='500 10px DM Sans,system-ui'
+    ctx.textAlign='left'; ctx.fillText(item.links, bw+6, y+barH-2)
+  })
+}
+function rr(ctx,x,y,w,h,r) {
+  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y)
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r)
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h)
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r)
+  ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath()
+}
+
+// ══════════════════════════════════════════════════
+// SPARKLINES
+// ══════════════════════════════════════════════════
+function drawSparkline(id, data, color) {
+  const wrap = document.getElementById(id)
+  if (!wrap || !data.length) return
+  wrap.innerHTML=''
+  const canvas=document.createElement('canvas')
+  canvas.width=wrap.offsetWidth||100; canvas.height=28
+  wrap.appendChild(canvas)
+  const ctx=canvas.getContext('2d')
+  const max=Math.max(...data),min=Math.min(...data),range=max-min||1
+  const W=canvas.width,H=canvas.height,step=W/(data.length-1)
+  const grad=ctx.createLinearGradient(0,0,0,H)
+  grad.addColorStop(0,color.replace('0.9)','0.3)')); grad.addColorStop(1,'transparent')
+  ctx.beginPath()
+  data.forEach((v,i)=>{ const x=i*step,y=H-((v-min)/range)*(H-4)-2; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y) })
+  ctx.lineTo((data.length-1)*step,H); ctx.lineTo(0,H); ctx.closePath()
+  ctx.fillStyle=grad; ctx.fill()
+  ctx.beginPath()
+  data.forEach((v,i)=>{ const x=i*step,y=H-((v-min)/range)*(H-4)-2; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y) })
+  ctx.strokeStyle=color; ctx.lineWidth=1.5; ctx.stroke()
+}
+
+// ══════════════════════════════════════════════════
+// INSIGHT CARDS
+// ══════════════════════════════════════════════════
+function initInsightCards() {
+  document.querySelectorAll('.insight-expand').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card   = btn.closest('.insight-card')
+      const detail = card.querySelector('.insight-detail')
+      if (!detail) return
+      const open = detail.classList.contains('open')
+      detail.classList.toggle('open', !open)
+      btn.classList.toggle('expanded', !open)
+    })
+  })
+}
+
+// ══════════════════════════════════════════════════
+// SCROLL REVEAL + COUNTER ANIMATION
+// ══════════════════════════════════════════════════
+function animateCounter(el) {
+  const raw    = el.dataset.target
+  const suffix = el.dataset.suffix || ''
+  const fmt    = el.dataset.format
+  if (raw === undefined || raw === '') return
+  const target = parseFloat(raw)
+  if (isNaN(target)) return
+  const dur = 1200, start = performance.now()
+  function step(now) {
+    const p = Math.min((now-start)/dur, 1)
+    const e = 1 - Math.pow(2, -10*p)
+    const v = e * target
+    let display = (fmt==='compact' && v>=1000) ? (v/1000).toFixed(1)+'k'
+                : Number.isInteger(target) ? Math.round(v).toString()
+                : v.toFixed(1)
+    el.textContent = display + suffix
+    if (p < 1) requestAnimationFrame(step)
+  }
+  requestAnimationFrame(step)
+}
+
+function initScrollReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return
+      const el    = entry.target
+      const delay = parseInt(el.dataset.delay || '0', 10)
+      setTimeout(() => {
+        el.classList.add('visible')
+        el.querySelectorAll('[data-target]').forEach(animateCounter)
+        el.querySelectorAll('.linked-bar-fill').forEach(f => {
+          f.style.width = (f.dataset.width || 0) + '%'
+        })
+      }, delay)
+      obs.unobserve(el)
+    })
+  }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' })
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el))
+}
+
+// ══════════════════════════════════════════════════
+// FETCH FROM REAL BACKEND
+// ══════════════════════════════════════════════════
+async function fetchAnalytics() {
+  // Show placeholder while loading
+  document.querySelectorAll('.stat-value').forEach(el => {
+    if (el.dataset.target !== undefined) el.textContent = '—'
+  })
+
+  try {
+    const res = await fetch('http://localhost:4000/api/analytics', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+
+    if (res.status === 401) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      window.location.href = '../auth/login.html'
+      return
+    }
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+
+    const data = await res.json()
+
+    // API doesn't return linkedNotes — derive from tagDistribution
+    // (top tags by note count = most referenced topics in your graph)
+    data.linkedNotes = (data.tagDistribution || []).slice(0, 5).map(t => {
+      const raw = t.label.replace(/^#/, '')
+      return {
+        name:  raw.charAt(0).toUpperCase() + raw.slice(1),
+        count: t.count
+      }
+    })
+
+    API_DATA = data
+
+  } catch (err) {
+    console.warn('Backend unreachable — using mock data:', err.message)
+    API_DATA = buildMockData()
+  }
+
+  renderAll()
+}
+
+// ── Boot ───────────────────────────────────────────
+fetchAnalytics()
+</script>
+</body>
+</html>
