@@ -49,22 +49,25 @@ app.use('/api/settings', require('./routes/settings'));
 
 app.use(express.static(path.join(__dirname, '../../client')));
 
-/* Root route -> Landing Page */
+/* Root route */
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../client/pages/landing/index.html'));
-});
-
-/* SPA fallback — skip asset files, serve landing for everything else */
-
-app.get('/*', (req, res, next) => {
-  if (req.path.includes('.')) return next();
-
   res.sendFile(
     path.join(__dirname, '../../client/pages/landing/index.html')
   );
 });
 
+/* SPA fallback */
+
+app.use((req, res) => {
+  if (req.path.includes('.')) {
+    return res.status(404).end();
+  }
+
+  res.sendFile(
+    path.join(__dirname, '../../client/pages/landing/index.html')
+  );
+});
 /* ---------------- SERVER ---------------- */
 
 const PORT = process.env.PORT || 4000;
