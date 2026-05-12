@@ -59,7 +59,7 @@ const TAG_COLORS = [
 // ══════════════════════════════════════════════════
 async function fetchAnalytics() {
   try {
-    const res = await fetch('http://localhost:4000/api/analytics', {
+    const res = await fetch('https://minerva-spwa.onrender.com/api/analytics', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
