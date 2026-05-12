@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
 
 /* SPA fallback — skip asset files, serve landing for everything else */
 
-app.get('*', (req, res, next) => {
+app.get('/*', (req, res, next) => {
   if (req.path.includes('.')) return next();
 
   res.sendFile(
