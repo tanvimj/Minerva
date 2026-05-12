@@ -15,7 +15,8 @@ app.use(express.json());
 
 app.use(cors({
   origin: [
-    'https://minerva-spwa.onrender.com'
+    'https://minerva-spwa.onrender.com',
+    'http://localhost:3000'
   ],
   credentials: true
 }));
@@ -56,9 +57,12 @@ app.get('/', (req, res) => {
 
 /* SPA fallback — skip asset files, serve landing for everything else */
 
-app.get('/{*splat}', (req, res, next) => {
+app.get('*', (req, res, next) => {
   if (req.path.includes('.')) return next();
-  res.sendFile(path.join(__dirname, '../../client/pages/landing/index.html'));
+
+  res.sendFile(
+    path.join(__dirname, '../../client/pages/landing/index.html')
+  );
 });
 
 /* ---------------- SERVER ---------------- */
