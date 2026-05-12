@@ -10,7 +10,7 @@
   const user  = JSON.parse(localStorage.getItem('user') || 'null');
   if (!token || !user) window.location.href = '../auth/login.html';
 
-  const API = 'http://localhost:4000/api/settings';
+  const API = 'https://minerva-spwa.onrender.com/api/settings';
   const authHeaders = () => ({
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`

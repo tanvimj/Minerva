@@ -117,7 +117,7 @@ function getTagColor(tag) {
 // ══════════════════════════════════════════════════
 async function loadGraph() {
   try {
-    const res = await fetch('http://localhost:4000/api/notes', {
+    const res = await fetch('https://minerva-spwa.onrender.com/api/notes', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     if (!res.ok) throw new Error('Notes fetch failed')

@@ -59,7 +59,7 @@
   // ══════════════════════════════════════════════════
   // API HELPERS
   // ══════════════════════════════════════════════════
-  const API = 'http://localhost:4000/api/notes';
+  const API = 'https://minerva-spwa.onrender.com/api/notes';
   const headers = () => ({
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`

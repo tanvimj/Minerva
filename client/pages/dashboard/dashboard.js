@@ -60,7 +60,7 @@ logoutBtn.addEventListener('click', () => {
 });
 
 // ── Fetch fresh user data from server ────────────
-fetch('http://localhost:4000/api/auth/me', {
+fetch('https://minerva-spwa.onrender.com/api/auth/me', {
   headers: { Authorization: `Bearer ${token}` }
 })
   .then(res => res.json())
@@ -214,7 +214,7 @@ fetch('http://localhost:4000/api/auth/me', {
       captureBtn.disabled = true;
 
       try {
-        const res = await fetch('http://localhost:4000/api/notes', {
+        const res = await fetch('https://minerva-spwa.onrender.com/api/notes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -316,7 +316,7 @@ fetch('http://localhost:4000/api/auth/me', {
   // ── Load real notes from server ───────────────────
   async function loadNotes() {
     try {
-      const res = await fetch('http://localhost:4000/api/notes', {
+      const res = await fetch('https://minerva-spwa.onrender.com/api/notes', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();

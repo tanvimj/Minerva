@@ -43,7 +43,7 @@
   const sortSelect     = document.getElementById('sortSelect');
 
   // ── API ─────────────────────────────────────
-  const API = 'http://localhost:4000/api/goals';
+  const API = 'https://minerva-spwa.onrender.com/api/goals';
   const authHeaders = () => ({
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`
